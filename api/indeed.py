@@ -1,6 +1,15 @@
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 import json
+import os
+import sys
+
+# Vercel runs this handler from /var/task with only that directory on
+# sys.path, so the sibling _lib_indeed module can't be imported by bare name
+# (ModuleNotFoundError at cold start → 500). Add this file's own directory
+# (…/api) to the path. Under pytest, pythonpath=api already covers it — this
+# makes the deploy runtime and the test runtime agree.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from _lib_indeed import to_job_results
 
