@@ -34,3 +34,7 @@ npm run dev
 ```
 
 UI language: **Italian**.
+
+## Design credits
+
+The UI is based on the [Nextly template](https://github.com/web3templates/nextly-template) by Surjith S M / Web3Templates (MIT license) — see [CREDITS.md](CREDITS.md).
