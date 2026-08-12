@@ -471,12 +471,12 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                     transition={{ duration: 0.4, ease: "easeOut" }}
                     className="space-y-6 text-center"
                   >
-                    <div className="space-y-1">
-                      <h1 className="text-[2.5rem] font-bold leading-[1.1] tracking-tight text-white">
-                        Bentornato
+                    <div className="space-y-2">
+                      <h1 className="text-6xl sm:text-7xl font-bold leading-[1.05] tracking-tight text-white">
+                        Job<span className="text-indigo-400">Signal</span>
                       </h1>
-                      <p className="text-[1.8rem] text-white/70 font-light">
-                        Accedi a JobSignal
+                      <p className="text-[1.4rem] text-white/70 font-light">
+                        Il radar delle posizioni aperte
                       </p>
                     </div>
 
