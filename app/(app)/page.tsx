@@ -5,6 +5,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Container } from "@/components/container";
 import { PositionCard } from "@/components/position-card";
 import { LogoMark } from "@/components/logo";
+import { CanvasRevealEffect } from "@/components/ui/sign-in-flow-1";
 import { openPositions, type Position } from "@/lib/sample-data";
 
 interface TieredResults {
@@ -56,7 +57,25 @@ export default function HomePage() {
   const results = useMemo(() => search(query), [query]);
 
   return (
-    <Container className="max-w-4xl">
+    // `dark` forces the dark card/input styles on the black canvas background
+    <div className="dark relative flex-1 w-full bg-black">
+      <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+        <CanvasRevealEffect
+          animationSpeed={3}
+          containerClassName="bg-black"
+          colors={[
+            [99, 102, 241],
+            [255, 255, 255],
+          ]}
+          dotSize={4}
+          opacities={[0.1, 0.1, 0.15, 0.15, 0.2, 0.2, 0.25, 0.3, 0.35, 0.4]}
+          reverse={false}
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(0,0,0,0.85)_0%,_transparent_100%)]" />
+        <div className="absolute top-0 left-0 right-0 h-1/4 bg-gradient-to-b from-black to-transparent" />
+      </div>
+
+      <Container className="relative z-10 max-w-4xl">
       {/* Hero, Nextly-style */}
       <div className="flex flex-col items-center pt-10 text-center lg:pt-16">
         <LogoMark className="w-14 h-14" />
@@ -155,6 +174,7 @@ export default function HomePage() {
           </div>
         </div>
       )}
-    </Container>
+      </Container>
+    </div>
   );
 }
