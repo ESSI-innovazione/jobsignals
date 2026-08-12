@@ -6,7 +6,23 @@ import { Container } from "@/components/container";
 import { PositionCard } from "@/components/position-card";
 import { LogoMark } from "@/components/logo";
 import { CanvasRevealEffect } from "@/components/ui/sign-in-flow-1";
+import { ImageStreamHero } from "@/components/ui/image-stream-hero";
 import { openPositions, type Position } from "@/lib/sample-data";
+
+// Corridor images: TimeVision photos (www.timevision.it, self-hosted in
+// /public/hero) interleaved with the three source-brand tiles.
+const HERO_IMAGES = [
+  { src: "/hero/tv-2148721299.webp" },
+  { src: "/hero/linkedin.svg" },
+  { src: "/hero/tv-2149241039.webp" },
+  { src: "/hero/tv-614.webp" },
+  { src: "/hero/indeed.svg" },
+  { src: "/hero/tv-2148908931.webp" },
+  { src: "/hero/tv-396755.webp" },
+  { src: "/hero/website.svg" },
+  { src: "/hero/tv-2149283319.webp" },
+  { src: "/hero/tv-3144.webp" },
+];
 
 interface TieredResults {
   exact: Position[];
@@ -80,9 +96,20 @@ export default function HomePage() {
         />
       </div>
 
-      <Container className="relative z-10 max-w-4xl">
-      {/* Hero, Nextly-style */}
-      <div className="flex flex-col items-center pt-10 text-center lg:pt-16">
+      {/* Hero: image-stream corridor of TimeVision photos + source tiles */}
+      <ImageStreamHero
+        images={HERO_IMAGES}
+        cards={9}
+        speed={18}
+        axis={55}
+        className="relative z-10 h-[520px] w-full sm:h-[580px]"
+      >
+        {/* readability scrim over the corridor's centre */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_60%_65%_at_50%_50%,rgba(255,255,255,0.9)_0%,rgba(255,255,255,0.45)_55%,transparent_78%)] dark:bg-[radial-gradient(ellipse_60%_65%_at_50%_50%,rgba(0,0,0,0.85)_0%,rgba(0,0,0,0.4)_55%,transparent_78%)]"
+        />
+        <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 text-center">
         <LogoMark className="w-14 h-14" />
         <h1 className="mt-6 text-4xl font-bold leading-snug tracking-tight text-gray-800 lg:text-5xl lg:leading-tight dark:text-white">
           Cosa stai cercando?
@@ -120,8 +147,10 @@ export default function HomePage() {
         <p className="mt-4 text-sm text-gray-400 dark:text-gray-500">
           es. AI Developer · Data Engineer · HR Specialist
         </p>
-      </div>
+        </div>
+      </ImageStreamHero>
 
+      <Container className="relative z-10 max-w-4xl">
       {/* Results */}
       {query.trim() !== "" && (
         <div className="pb-10">

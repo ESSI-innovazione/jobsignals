@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 500">
+  <rect width="360" height="500" fill="#2557A7"/>
+  <circle cx="180" cy="196" r="20" fill="#ffffff"/>
+  <rect x="164" y="236" width="32" height="108" rx="14" fill="#ffffff"/>
+  <text x="180" y="420" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="44" font-weight="700" fill="#ffffff" text-anchor="middle">indeed</text>
+</svg>

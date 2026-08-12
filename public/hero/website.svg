@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 500">
+  <rect width="360" height="500" fill="#059669"/>
+  <g stroke="#ffffff" stroke-width="10" fill="none">
+    <circle cx="180" cy="235" r="85"/>
+    <path d="M95 235h170"/>
+    <path d="M180 150c38 40 38 130 0 170-38-40-38-130 0-170z"/>
+  </g>
+  <text x="180" y="420" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="middle">Siti aziendali</text>
+</svg>
