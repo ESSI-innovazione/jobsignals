@@ -15,7 +15,7 @@ export function Footer() {
   return (
     <div className="relative mt-auto">
       <Container>
-        <div className="grid max-w-screen-xl grid-cols-1 gap-6 pt-6 mx-auto border-t border-gray-100 dark:border-neutral-700 lg:grid-cols-5">
+        <div className="grid max-w-screen-xl grid-cols-1 gap-10 pt-10 mx-auto mt-5 border-t border-gray-100 dark:border-neutral-700 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <LogoText />
             <div className="max-w-md mt-4 text-gray-500 dark:text-gray-400">
@@ -53,7 +53,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="my-6 text-sm text-center text-gray-500 dark:text-gray-400">
+        <div className="my-10 text-sm text-center text-gray-500 dark:text-gray-400">
           © {new Date().getFullYear()} TimeVision — JobSignal. Design basato sul
           template{" "}
           <a

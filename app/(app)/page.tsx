@@ -91,7 +91,9 @@ export default function HomePage() {
         cards={9}
         speed={18}
         axis={55}
-        className="relative z-10 w-full flex-1 min-h-[520px] sm:min-h-[440px]"
+        // 88px = navbar height (p-6 + 40px content): the hero fills the rest
+        // of the first screen so the footer starts below the fold.
+        className="relative z-10 w-full flex-1 min-h-[520px] sm:min-h-[calc(100svh-88px)]"
       >
         {/* readability scrim over the corridor's centre */}
         <div
