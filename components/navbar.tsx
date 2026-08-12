@@ -77,7 +77,7 @@ export function Navbar() {
           )}
         </Disclosure>
 
-        <div className="hidden text-center lg:flex lg:items-center">
+        <div className="hidden text-center lg:flex lg:items-center lg:absolute lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2">
           <ul className="items-center justify-end flex-1 pt-6 list-none lg:pt-0 lg:flex">
             {navigation.map((item) => (
               <li className="mr-3" key={item.href}>
