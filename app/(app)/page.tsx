@@ -66,7 +66,7 @@ export default function HomePage() {
     // navbar and footer too). It follows the theme toggle: dark = the
     // reference image (black with a violet glow from below), light = white
     // with a soft lavender glow. Content uses its normal light/dark styles.
-    <div className="relative flex-1 w-full">
+    <div className="relative flex-1 w-full flex flex-col">
       <div className="fixed inset-0 -z-10 pointer-events-none" aria-hidden="true">
         <div className="absolute inset-0 bg-white dark:bg-black" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_140%_90%_at_50%_120%,#c4b5fd_0%,#ddd6fe_25%,#ede9fe_50%,#ffffff_82%)] dark:bg-[radial-gradient(ellipse_140%_90%_at_50%_120%,#7c3aed_0%,#5b21b6_25%,#3b0764_50%,#17053a_68%,#000000_88%)]" />
@@ -91,7 +91,7 @@ export default function HomePage() {
         cards={9}
         speed={18}
         axis={55}
-        className="relative z-10 h-[520px] w-full sm:h-[580px]"
+        className="relative z-10 w-full flex-1 min-h-[520px] sm:min-h-[440px]"
       >
         {/* readability scrim over the corridor's centre */}
         <div
