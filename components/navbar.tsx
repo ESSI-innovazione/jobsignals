@@ -6,7 +6,6 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
 import { DarkSwitch } from "./dark-switch";
-import { LogoText } from "./logo";
 
 const navigation = [
   { label: "Home", href: "/" },
@@ -32,10 +31,6 @@ export function Navbar() {
       )}
     >
       <nav className="container relative flex flex-wrap items-center justify-between p-6 mx-auto lg:justify-between xl:px-1">
-        <Link href="/">
-          <LogoText />
-        </Link>
-
         <div className="gap-3 mr-2 flex items-center ml-auto lg:ml-0 lg:order-2">
           <DarkSwitch />
           <div className="hidden mr-3 lg:flex">
