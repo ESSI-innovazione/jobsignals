@@ -13,7 +13,16 @@ async function fetchWithTimeout(url: string, ms: number): Promise<JobResult[]> {
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), ms);
   try {
-    const res = await fetch(url, { signal: ctl.signal });
+    // This route calls the sibling /api/indeed function over HTTP. When Vercel
+    // Deployment Protection (SSO) is enabled, that server-to-server request has
+    // no login cookie and would get the HTML auth page instead of JSON. The
+    // automation-bypass secret lets the internal call through; absent locally,
+    // the header is simply omitted.
+    const bypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+    const res = await fetch(url, {
+      signal: ctl.signal,
+      headers: bypass ? { "x-vercel-protection-bypass": bypass } : undefined,
+    });
     if (!res.ok) throw new Error(`${url} responded ${res.status}`);
     const data = (await res.json()) as { results?: JobResult[]; error?: string };
     if (data.error) throw new Error(`indeed: ${data.error}`);
