@@ -102,6 +102,10 @@ export default function HomePage() {
         cards={9}
         speed={18}
         axis={55}
+        // Rails pushed further out (railExit) and near cards kept smaller
+        // (exitHeight) so the streams hug the screen edges and the centre
+        // stays clear for the search content.
+        path={{ railExit: 58, exitHeight: 38 }}
         className="relative z-10 h-[520px] w-full sm:h-[580px]"
       >
         {/* readability scrim over the corridor's centre */}
