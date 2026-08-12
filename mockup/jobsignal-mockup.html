@@ -1,0 +1,1009 @@
+<title>JobSignal</title>
+<style>
+  /* ============================================================
+     JobSignal — mockup cliccabile · design system MercuryPro
+     Palette: wine #510B1D · green #1F5436 · cream #fbf8f4
+     Chart categorical (validated): #9c3a56 / #c07b1a / #2e7d4f
+     ============================================================ */
+  :root {
+    --wine: #510B1D;
+    --wine-deep: #3d0815;
+    --wine-700: #73142d;
+    --wine-mid: #973350;
+    --wine-soft: #f6e7eb;
+    --wine-tint: #fcf3f5;
+    --green: #1F5436;
+    --green-bright: #4eb87a;
+    --green-soft: #e6f2eb;
+    --cream: #fbf8f4;
+    --paper: #ffffff;
+    --ink: #1d1117;
+    --ink-soft: #5b4f55;
+    --ink-faint: #8a7f85;
+    --line: #ece3e6;
+    --line-soft: #f3edef;
+    --amber: #e0992b;
+    --amber-soft: #fcf2dd;
+    /* chart categorical — CVD-validated trio */
+    --src-linkedin: #9c3a56;
+    --src-indeed: #c07b1a;
+    --src-website: #2e7d4f;
+    --radius: 18px;
+    --radius-lg: 26px;
+    --shadow: 0 22px 50px -26px rgba(45, 10, 20, .35);
+    --shadow-sm: 0 8px 22px -14px rgba(45, 10, 20, .30);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: var(--wine); border-radius: 3px; }
+  :focus-visible { outline: 3px solid rgba(151, 51, 80, .5); outline-offset: 2px; border-radius: 6px; }
+
+  /* ---------- routing: show one screen at a time ---------- */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ============ LOGIN ============ */
+  .login-wrap { display: flex; min-height: 100vh; }
+  .login-brand {
+    flex: 1 1 46%;
+    background: linear-gradient(135deg, #490A19 0%, #5a1228 50%, #490A19 100%);
+    color: #fff;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 64px; position: relative; overflow: hidden;
+  }
+  .login-brand .rings {
+    position: absolute; right: -140px; top: -140px; width: 460px; height: 460px;
+    opacity: .18; pointer-events: none;
+  }
+  .login-brand .brand-row { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+  .login-brand h1 { font-size: 40px; font-weight: 800; letter-spacing: -.5px; }
+  .login-brand .tagline { font-size: 19px; font-weight: 600; color: #f3d9e0; max-width: 24ch; text-wrap: balance; margin-bottom: 18px; }
+  .login-brand p.sub { color: #d9b3bf; max-width: 44ch; font-size: 14px; }
+  .login-brand .src-row { display: flex; gap: 10px; margin-top: 34px; }
+  .login-form-side {
+    flex: 1 1 54%; display: flex; align-items: center; justify-content: center; padding: 40px;
+  }
+  .login-card {
+    background: var(--paper); border-radius: var(--radius-lg); box-shadow: var(--shadow);
+    padding: 44px; width: 100%; max-width: 420px;
+  }
+  .login-card h2 { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
+  .login-card .hint { color: var(--ink-soft); font-size: 14px; margin-bottom: 28px; }
+  .field { margin-bottom: 18px; }
+  .field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--ink-soft); }
+  .field input, .field select {
+    width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid #e8dfd4;
+    background: #faf7f2; font: inherit; color: var(--ink);
+    transition: background-color .2s, border-color .2s, box-shadow .2s;
+  }
+  .field input:focus, .field select:focus {
+    outline: none; background: #fff; border-color: var(--wine-mid);
+    box-shadow: 0 0 0 3px rgba(88, 12, 31, .14);
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 13px 20px; border: none; border-radius: 12px;
+    background: linear-gradient(135deg, var(--wine-700), var(--wine));
+    color: #fff; font-weight: 700; font-size: 15px;
+    box-shadow: var(--shadow-sm); transition: transform .15s, box-shadow .15s;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+  .login-foot { margin-top: 22px; font-size: 12.5px; color: var(--ink-faint); text-align: center; }
+
+  /* ============ APP SHELL ============ */
+  .shell { display: none; min-height: 100vh; }
+  .shell.active { display: flex; }
+  .sidebar {
+    width: 244px; flex: 0 0 244px;
+    background: linear-gradient(135deg, #490A19 0%, #5a1228 50%, #490A19 100%);
+    color: #fff; display: flex; flex-direction: column;
+    padding: 26px 16px; position: sticky; top: 0; height: 100vh;
+  }
+  .sb-logo { display: flex; align-items: center; gap: 11px; padding: 0 10px 24px; }
+  .sb-logo .name { font-size: 19px; font-weight: 800; letter-spacing: -.3px; }
+  .sb-logo .name span { color: #e9a8bb; }
+  .logo-mark {
+    width: 38px; height: 38px; border-radius: 12px; flex: 0 0 38px;
+    background: rgba(255,255,255,.10); display: grid; place-items: center;
+  }
+  .sb-nav { display: flex; flex-direction: column; gap: 4px; }
+  .sb-nav a {
+    display: flex; align-items: center; gap: 12px; padding: 11px 14px;
+    border-radius: 12px; font-weight: 600; font-size: 14px; color: #e6c8d1;
+    transition: background .15s, color .15s;
+  }
+  .sb-nav a svg { flex: 0 0 18px; opacity: .85; }
+  .sb-nav a:hover { background: rgba(255,255,255,.07); color: #fff; }
+  .sb-nav a.active { background: rgba(255,255,255,.13); color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.10); }
+  .sb-foot { margin-top: auto; border-top: 1px solid rgba(255,255,255,.12); padding-top: 16px; }
+  .sb-user { display: flex; align-items: center; gap: 10px; padding: 6px 10px; }
+  .sb-avatar {
+    width: 34px; height: 34px; border-radius: 50%; flex: 0 0 34px;
+    background: linear-gradient(135deg, var(--green-bright), var(--green));
+    display: grid; place-items: center; font-size: 12px; font-weight: 800; color: #fff;
+  }
+  .sb-user .who { font-size: 13px; font-weight: 700; line-height: 1.25; }
+  .sb-user .role { font-size: 11.5px; color: #d9b3bf; font-weight: 500; }
+  .sb-exit { display: flex; align-items: center; gap: 12px; padding: 10px 14px; margin-top: 6px; border-radius: 12px; font-size: 13.5px; font-weight: 600; color: #d9b3bf; }
+  .sb-exit:hover { background: rgba(255,255,255,.07); color: #fff; }
+
+  .main { flex: 1; padding: 34px 40px 60px; max-width: 1080px; }
+  .page-head { margin-bottom: 24px; }
+  .page-head .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--wine-mid); margin-bottom: 4px; }
+  .page-head h2 { font-size: 26px; font-weight: 800; letter-spacing: -.4px; }
+  .page-head .sub { color: var(--ink-soft); font-size: 14px; margin-top: 4px; max-width: 62ch; }
+
+  /* KPI stat tiles */
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 26px; }
+  .kpi {
+    background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    padding: 18px 20px; border: 1px solid var(--line-soft);
+  }
+  .kpi .n { font-size: 30px; font-weight: 800; letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
+  .kpi .l { font-size: 12.5px; font-weight: 600; color: var(--ink-soft); margin-top: 2px; }
+  .kpi .delta { display: inline-block; font-size: 11.5px; font-weight: 700; color: var(--green); background: var(--green-soft); border-radius: 999px; padding: 2px 9px; margin-top: 8px; }
+
+  /* ---------- position cards ---------- */
+  .cards { display: flex; flex-direction: column; gap: 14px; }
+  .pos-card {
+    display: block; background: var(--paper); border: 1px solid var(--line-soft);
+    border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    padding: 20px 22px; transition: transform .15s, box-shadow .15s, border-color .15s;
+  }
+  .pos-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--wine-soft); }
+  .pos-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+  .pos-title { font-size: 16.5px; font-weight: 800; letter-spacing: -.2px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .badge-new {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700;
+    color: var(--green); background: var(--green-soft); border-radius: 999px; padding: 3px 10px;
+  }
+  .badge-new .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-bright); position: relative; }
+  .badge-new .dot::after {
+    content: ''; position: absolute; inset: -3px; border-radius: 50%;
+    border: 2px solid var(--green-bright); opacity: .5; animation: pulse 2s ease-out infinite;
+  }
+  @keyframes pulse { 0% { transform: scale(.6); opacity: .6; } 100% { transform: scale(1.6); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .badge-new .dot::after { animation: none; opacity: 0; }
+    .pos-card, .btn-primary { transition: none; }
+  }
+  .pos-meta { display: flex; align-items: center; gap: 8px; margin-top: 5px; font-size: 13.5px; color: var(--ink-soft); flex-wrap: wrap; }
+  .pos-meta .co { font-weight: 700; color: var(--wine-700); }
+  .pos-meta .co:hover { text-decoration: underline; }
+  .zona-pill {
+    font-size: 11.5px; font-weight: 700; color: var(--wine-700);
+    background: var(--wine-soft); border-radius: 999px; padding: 2.5px 10px;
+  }
+  .pos-desc { margin-top: 10px; color: var(--ink-soft); font-size: 13.5px; max-width: 78ch; }
+  .pos-foot { display: flex; align-items: center; gap: 14px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-soft); font-size: 12.5px; color: var(--ink-faint); flex-wrap: wrap; }
+  .pos-foot .open-link { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--wine-mid); font-size: 12.5px; }
+  .pos-card:hover .open-link { color: var(--wine-700); }
+
+  /* source chips */
+  .src-chip { display: inline-flex; align-items: center; gap: 7px; font-weight: 700; font-size: 12.5px; color: var(--ink-soft); }
+  .src-ic {
+    width: 20px; height: 20px; border-radius: 5px; display: inline-grid; place-items: center;
+    font-size: 10.5px; font-weight: 800; color: #fff; letter-spacing: -.3px;
+  }
+  .src-ic.linkedin { background: #0a66c2; }
+  .src-ic.indeed { background: #2557a7; font-style: italic; font-family: Georgia, serif; font-size: 13px; }
+  .src-ic.website { background: var(--green); }
+  .src-ic.website svg { width: 12px; height: 12px; }
+
+  /* ---------- search ---------- */
+  .filter-card {
+    background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    border: 1px solid var(--line-soft); padding: 22px; margin-bottom: 20px;
+  }
+  .filter-grid { display: grid; grid-template-columns: 1.2fr 1.4fr 1fr auto; gap: 14px; align-items: end; }
+  .chips { display: flex; gap: 8px; align-items: center; margin: 4px 0 16px; flex-wrap: wrap; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 700;
+    background: var(--wine-soft); color: var(--wine-700); border-radius: 999px; padding: 5px 12px;
+  }
+  .chip .x { font-weight: 800; opacity: .55; cursor: pointer; }
+  .result-count { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 14px; }
+  .result-count strong { color: var(--ink); }
+  mark { background: var(--amber-soft); color: inherit; border-radius: 3px; padding: 0 2px; }
+
+  /* ---------- aziende (list) ---------- */
+  .co-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .co-card {
+    display: flex; gap: 16px; align-items: center;
+    background: var(--paper); border: 1px solid var(--line-soft); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); padding: 18px 20px; transition: transform .15s, box-shadow .15s;
+  }
+  .co-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .co-logo {
+    width: 46px; height: 46px; border-radius: 13px; flex: 0 0 46px;
+    display: grid; place-items: center; font-weight: 800; font-size: 15px; color: #fff;
+    background: linear-gradient(135deg, var(--wine-700), var(--wine));
+  }
+  .co-card:nth-child(2n) .co-logo { background: linear-gradient(135deg, var(--green-bright), var(--green)); }
+  .co-card .info { flex: 1; min-width: 0; }
+  .co-card .nm { font-weight: 800; font-size: 15px; }
+  .co-card .st { font-size: 12.5px; color: var(--ink-soft); }
+  .co-card .open-n { text-align: right; }
+  .co-card .open-n .n { font-size: 21px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .co-card .open-n .l { font-size: 11px; color: var(--ink-faint); font-weight: 600; }
+
+  /* ---------- company dashboard ---------- */
+  .crumb { font-size: 13px; font-weight: 600; color: var(--ink-faint); margin-bottom: 16px; }
+  .crumb a { color: var(--wine-mid); font-weight: 700; }
+  .crumb a:hover { text-decoration: underline; }
+  .co-head {
+    display: flex; gap: 18px; align-items: center; background: var(--paper);
+    border: 1px solid var(--line-soft); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+    padding: 24px 26px; margin-bottom: 22px; flex-wrap: wrap;
+  }
+  .co-head .co-logo { width: 60px; height: 60px; flex-basis: 60px; border-radius: 16px; font-size: 20px; }
+  .co-head h3 { font-size: 22px; font-weight: 800; letter-spacing: -.3px; }
+  .co-head .meta { font-size: 13.5px; color: var(--ink-soft); margin-top: 3px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .co-head .meta a { color: var(--wine-mid); font-weight: 700; }
+  .co-head .follow {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 9px;
+    border: 1.5px solid var(--green); color: var(--green); background: var(--green-soft);
+    font-weight: 700; font-size: 13px; border-radius: 999px; padding: 8px 16px;
+  }
+  .charts-row { display: grid; grid-template-columns: 1.35fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .charts-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 22px; }
+  .chart-card {
+    background: var(--paper); border: 1px solid var(--line-soft); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); padding: 20px 22px;
+  }
+  .chart-card h4 { font-size: 14px; font-weight: 800; margin-bottom: 2px; }
+  .chart-card .ch-sub { font-size: 12px; color: var(--ink-faint); margin-bottom: 16px; }
+  .linechart { width: 100%; height: auto; display: block; overflow: visible; }
+  .linechart text { font-family: inherit; }
+  /* horizontal bars */
+  .hbars { display: flex; flex-direction: column; gap: 12px; }
+  .hbar { display: grid; grid-template-columns: 92px 1fr 26px; align-items: center; gap: 10px; }
+  .hbar .lbl { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
+  .hbar .track { background: var(--line-soft); border-radius: 4px; height: 12px; position: relative; }
+  .hbar .fill { position: absolute; inset: 0 auto 0 0; border-radius: 4px; }
+  .hbar .val { font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; text-align: right; }
+  .sw { width: 10px; height: 10px; border-radius: 3px; flex: 0 0 10px; }
+  /* openings table */
+  .tbl-card { background: var(--paper); border: 1px solid var(--line-soft); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 20px 22px; }
+  .tbl-card h4 { font-size: 14px; font-weight: 800; margin-bottom: 14px; }
+  table.openings { width: 100%; border-collapse: separate; border-spacing: 0 6px; font-size: 13.5px; }
+  table.openings th { text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-faint); font-weight: 700; padding: 0 12px 4px; }
+  table.openings td { padding: 11px 12px; }
+  table.openings tbody tr { transition: background-color .2s; }
+  table.openings tbody tr:nth-child(odd) td { background: var(--wine-soft); }
+  table.openings tbody tr:nth-child(even) td { background: var(--paper); box-shadow: 0 1px 6px -3px rgba(81,11,29,.08); }
+  table.openings tbody tr td:first-child { border-radius: 12px 0 0 12px; font-weight: 700; }
+  table.openings tbody tr td:last-child { border-radius: 0 12px 12px 0; }
+  table.openings tbody tr:hover td { background: var(--wine-tint); }
+  .tbl-wrap { overflow-x: auto; }
+
+  /* ---------- notification settings ---------- */
+  .pref-section {
+    background: var(--paper); border: 1px solid var(--line-soft); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); padding: 22px 24px; margin-bottom: 18px;
+  }
+  .pref-section h4 { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+  .pref-section .desc { font-size: 13px; color: var(--ink-soft); margin: 3px 0 16px; max-width: 66ch; }
+  .pref-row {
+    display: flex; align-items: center; gap: 12px; padding: 11px 4px;
+    border-bottom: 1px solid var(--line-soft); font-size: 14px; font-weight: 600;
+  }
+  .pref-row:last-child { border-bottom: none; }
+  .pref-row .sub-lbl { font-size: 12px; color: var(--ink-faint); font-weight: 500; }
+  .pref-row .grow { flex: 1; }
+  .master-row { display: flex; align-items: center; gap: 14px; }
+  .master-row .grow { flex: 1; }
+  .master-row .t { font-size: 15px; font-weight: 800; }
+  .master-row .d { font-size: 13px; color: var(--ink-soft); }
+  /* toggle */
+  .toggle { position: relative; display: inline-block; width: 44px; height: 25px; flex: 0 0 44px; }
+  .toggle input { opacity: 0; width: 100%; height: 100%; position: absolute; margin: 0; cursor: pointer; }
+  .toggle .tk {
+    position: absolute; inset: 0; border-radius: 999px; background: #ddd2d6;
+    transition: background .2s; pointer-events: none;
+  }
+  .toggle .tk::after {
+    content: ''; position: absolute; top: 3px; left: 3px; width: 19px; height: 19px;
+    border-radius: 50%; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,.2); transition: transform .2s;
+  }
+  .toggle input:checked + .tk { background: var(--green); }
+  .toggle input:checked + .tk::after { transform: translateX(19px); }
+  .toggle input:focus-visible + .tk { outline: 3px solid rgba(151,51,80,.5); outline-offset: 2px; }
+  .add-row { display: flex; gap: 10px; margin-top: 14px; }
+  .add-row input { flex: 1; padding: 10px 14px; border-radius: 12px; border: 1px solid #e8dfd4; background: #faf7f2; font: inherit; }
+  .add-row input:focus { outline: none; background: #fff; border-color: var(--wine-mid); box-shadow: 0 0 0 3px rgba(88,12,31,.14); }
+  .btn-ghost {
+    padding: 10px 18px; border-radius: 12px; border: 1.5px solid var(--wine-soft);
+    background: var(--wine-tint); color: var(--wine-700); font-weight: 700; font-size: 13.5px;
+  }
+  .btn-ghost:hover { background: var(--wine-soft); }
+  .save-bar { display: flex; justify-content: flex-end; margin-top: 4px; }
+  .save-bar .btn-primary { width: auto; padding: 12px 28px; }
+
+  /* mockup banner */
+  .mock-note {
+    position: fixed; bottom: 14px; right: 14px; z-index: 50;
+    background: var(--ink); color: #fff; font-size: 11.5px; font-weight: 700;
+    border-radius: 999px; padding: 6px 14px; opacity: .78;
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 960px) {
+    .shell.active { flex-direction: column; }
+    .sidebar { width: 100%; flex: none; height: auto; position: static; flex-direction: row; align-items: center; padding: 12px 16px; gap: 8px; overflow-x: auto; }
+    .sb-logo { padding: 0 8px 0 0; }
+    .sb-nav { flex-direction: row; }
+    .sb-foot { margin: 0 0 0 auto; border: none; padding: 0; display: flex; align-items: center; }
+    .sb-user .who, .sb-user .role { display: none; }
+    .sb-exit { padding: 8px; }
+    .main { padding: 22px 18px 50px; }
+    .kpis { grid-template-columns: 1fr; }
+    .filter-grid { grid-template-columns: 1fr; }
+    .co-grid, .charts-row, .charts-row2 { grid-template-columns: 1fr; }
+    .login-wrap { flex-direction: column; }
+    .login-brand { padding: 44px 28px; }
+  }
+</style>
+
+<!-- ================= LOGIN ================= -->
+<section class="screen" id="scr-login">
+  <div class="login-wrap">
+    <div class="login-brand">
+      <svg class="rings" viewBox="0 0 200 200" aria-hidden="true">
+        <circle cx="100" cy="100" r="30" fill="none" stroke="#fff" stroke-width="2"/>
+        <circle cx="100" cy="100" r="60" fill="none" stroke="#fff" stroke-width="2"/>
+        <circle cx="100" cy="100" r="90" fill="none" stroke="#fff" stroke-width="2"/>
+        <circle cx="100" cy="100" r="8" fill="#fff"/>
+      </svg>
+      <div class="brand-row">
+        <div class="logo-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="14" r="2.2" fill="#fff" stroke="none"/>
+            <path d="M7.5 9.5a6.4 6.4 0 0 1 9 0"/>
+            <path d="M4.8 6.8a10.2 10.2 0 0 1 14.4 0"/>
+          </svg>
+        </div>
+        <h1>Job<span style="color:#e9a8bb">Signal</span></h1>
+      </div>
+      <div class="tagline">Il radar delle posizioni aperte nelle aziende che segui.</div>
+      <p class="sub">Piattaforma interna TimeVision per monitorare le offerte di lavoro pubblicate da altre aziende su LinkedIn, Indeed e sui loro siti — in un unico posto.</p>
+      <div class="src-row" aria-hidden="true">
+        <span class="src-ic linkedin" style="width:26px;height:26px;font-size:12px">in</span>
+        <span class="src-ic indeed" style="width:26px;height:26px">i</span>
+        <span class="src-ic website" style="width:26px;height:26px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 2.5 15.4 0 18-2.5-2.6-2.5-15.4 0-18z"/></svg>
+        </span>
+      </div>
+    </div>
+    <div class="login-form-side">
+      <form class="login-card" onsubmit="location.hash='#/posizioni';return false;">
+        <h2>Accedi</h2>
+        <p class="hint">Accesso riservato al team TimeVision.</p>
+        <div class="field">
+          <label for="lg-mail">Email aziendale</label>
+          <input id="lg-mail" type="email" placeholder="nome.cognome@timevision.it" autocomplete="username">
+        </div>
+        <div class="field">
+          <label for="lg-pass">Password</label>
+          <input id="lg-pass" type="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-primary">Accedi</button>
+        <p class="login-foot">Problemi di accesso? Scrivi a innovazione@timevision.it</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ================= APP SHELL ================= -->
+<div class="shell" id="app-shell">
+  <aside class="sidebar">
+    <a class="sb-logo" href="#/posizioni">
+      <div class="logo-mark" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="14" r="2.2" fill="#fff" stroke="none"/>
+          <path d="M7.5 9.5a6.4 6.4 0 0 1 9 0"/>
+          <path d="M4.8 6.8a10.2 10.2 0 0 1 14.4 0"/>
+        </svg>
+      </div>
+      <div class="name">Job<span>Signal</span></div>
+    </a>
+    <nav class="sb-nav" aria-label="Navigazione principale">
+      <a href="#/posizioni" data-route="posizioni">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="7" width="18" height="13" rx="3"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        Posizioni
+      </a>
+      <a href="#/ricerca" data-route="ricerca">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        Ricerca
+      </a>
+      <a href="#/aziende" data-route="aziende">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/><path d="M14 9h4a2 2 0 0 1 2 2v10"/><path d="M2 21h20"/><path d="M8 7h2M8 11h2M8 15h2"/></svg>
+        Aziende
+      </a>
+      <a href="#/notifiche" data-route="notifiche">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        Notifiche
+      </a>
+    </nav>
+    <div class="sb-foot">
+      <div class="sb-user">
+        <div class="sb-avatar">ME</div>
+        <div>
+          <div class="who">Maria Esposito</div>
+          <div class="role">HR Specialist</div>
+        </div>
+      </div>
+      <a class="sb-exit" href="#/login">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+        Esci
+      </a>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ========== FEED / POSIZIONI ========== -->
+    <section class="screen" id="scr-posizioni">
+      <div class="page-head">
+        <div class="eyebrow">Feed</div>
+        <h2>Posizioni aperte</h2>
+        <p class="sub">Le offerte di lavoro più recenti pubblicate dalle aziende monitorate. Clicca una posizione per aprire l'annuncio originale.</p>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi">
+          <div class="n">42</div>
+          <div class="l">Posizioni aperte</div>
+          <span class="delta">+5 questa settimana</span>
+        </div>
+        <div class="kpi">
+          <div class="n">7</div>
+          <div class="l">Aziende monitorate</div>
+          <span class="delta">+1 questo mese</span>
+        </div>
+        <div class="kpi">
+          <div class="n">3</div>
+          <div class="l">Fonti attive</div>
+          <span class="delta" style="color:var(--ink-soft);background:var(--line-soft)">LinkedIn · Indeed · Siti</span>
+        </div>
+      </div>
+
+      <div class="cards">
+
+        <a class="pos-card" href="https://www.linkedin.com/jobs/" target="_blank" rel="noopener">
+          <div class="pos-top">
+            <div>
+              <div class="pos-title">AI Developer <span class="badge-new"><span class="dot"></span>Nuova</span></div>
+              <div class="pos-meta"><span class="co">Neapolis Tech S.r.l.</span> · <span class="zona-pill">Napoli</span></div>
+            </div>
+          </div>
+          <p class="pos-desc">Cerchiamo un AI Developer con esperienza in LLM, RAG e Python per il nostro team R&amp;D. Progetti su NLP in italiano per clienti enterprise. Ibrido, 2 giorni in sede.</p>
+          <div class="pos-foot">
+            <span class="src-chip"><span class="src-ic linkedin">in</span>LinkedIn</span>
+            <span>Pubblicata l'11 agosto 2026</span>
+            <span class="open-link">Apri annuncio ↗</span>
+          </div>
+        </a>
+
+        <a class="pos-card" href="https://it.indeed.com/" target="_blank" rel="noopener">
+          <div class="pos-top">
+            <div>
+              <div class="pos-title">Data Engineer <span class="badge-new"><span class="dot"></span>Nuova</span></div>
+              <div class="pos-meta"><span class="co">Vesuvio Analytics</span> · <span class="zona-pill">Napoli</span></div>
+            </div>
+          </div>
+          <p class="pos-desc">Data Engineer per pipeline su Azure e dbt: modellazione dati, orchestrazione e data quality per progetti retail e utilities nel Sud Italia.</p>
+          <div class="pos-foot">
+            <span class="src-chip"><span class="src-ic indeed">i</span>Indeed</span>
+            <span>Pubblicata il 10 agosto 2026</span>
+            <span class="open-link">Apri annuncio ↗</span>
+          </div>
+        </a>
+
+        <a class="pos-card" href="https://example.com/careers" target="_blank" rel="noopener">
+          <div class="pos-top">
+            <div>
+              <div class="pos-title">HR Specialist</div>
+              <div class="pos-meta"><span class="co">Partenope HR Solutions</span> · <span class="zona-pill">Salerno</span></div>
+            </div>
+          </div>
+          <p class="pos-desc">HR Specialist per gestione del ciclo di selezione, onboarding e amministrazione del personale. Gradita esperienza con agenzie per il lavoro.</p>
+          <div class="pos-foot">
+            <span class="src-chip"><span class="src-ic website"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 2.5 15.4 0 18-2.5-2.6-2.5-15.4 0-18z"/></svg></span>Sito aziendale</span>
+            <span>Pubblicata il 9 agosto 2026</span>
+            <span class="open-link">Apri annuncio ↗</span>
+          </div>
+        </a>
+
+        <a class="pos-card" href="https://www.linkedin.com/jobs/" target="_blank" rel="noopener">
+          <div class="pos-top">
+            <div>
+              <div class="pos-title">Full-Stack Developer</div>
+              <div class="pos-meta"><span class="co">Costiera Digital</span> · <span class="zona-pill">Sorrento (NA)</span></div>
+            </div>
+          </div>
+          <p class="pos-desc">Sviluppo di piattaforme e-commerce e portali turistici con React, Node.js e PostgreSQL. Team giovane, remote-friendly.</p>
+          <div class="pos-foot">
+            <span class="src-chip"><span class="src-ic linkedin">in</span>LinkedIn</span>
+            <span>Pubblicata l'8 agosto 2026</span>
+            <span class="open-link">Apri annuncio ↗</span>
+          </div>
+        </a>
+
+        <a class="pos-card" href="https://example.com/careers" target="_blank" rel="noopener">
+          <div class="pos-top">
+            <div>
+              <div class="pos-title">DevOps Engineer</div>
+              <div class="pos-meta"><span class="co">Neapolis Tech S.r.l.</span> · <span class="zona-pill">Napoli</span></div>
+            </div>
+          </div>
+          <p class="pos-desc">Gestione infrastruttura cloud (AWS, Kubernetes, Terraform) e CI/CD per prodotti SaaS. On-call ruotato, buoni pasto e welfare.</p>
+          <div class="pos-foot">
+            <span class="src-chip"><span class="src-ic website"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 2.5 15.4 0 18-2.5-2.6-2.5-15.4 0-18z"/></svg></span>Sito aziendale</span>
+            <span>Pubblicata il 7 agosto 2026</span>
+            <span class="open-link">Apri annuncio ↗</span>
+          </div>
+        </a>
+
+        <a class="pos-card" href="https://it.indeed.com/" target="_blank" rel="noopener">
+          <div class="pos-top">
+            <div>
+              <div class="pos-title">Recruiter Junior</div>
+              <div class="pos-meta"><span class="co">Partenope HR Solutions</span> · <span class="zona-pill">Salerno</span></div>
+            </div>
+          </div>
+          <p class="pos-desc">Primo impiego nel recruiting: screening CV, colloqui telefonici e gestione database candidati. Formazione interna e percorso di crescita.</p>
+          <div class="pos-foot">
+            <span class="src-chip"><span class="src-ic indeed">i</span>Indeed</span>
+            <span>Pubblicata il 6 agosto 2026</span>
+            <span class="open-link">Apri annuncio ↗</span>
+          </div>
+        </a>
+
+        <a class="pos-card" href="https://www.linkedin.com/jobs/" target="_blank" rel="noopener">
+          <div class="pos-top">
+            <div>
+              <div class="pos-title">Business Analyst</div>
+              <div class="pos-meta"><span class="co">Reggia Logistics</span> · <span class="zona-pill">Caserta</span></div>
+            </div>
+          </div>
+          <p class="pos-desc">Analisi dei processi logistici e reporting direzionale. Richiesti Excel avanzato, Power BI e conoscenza base di SQL.</p>
+          <div class="pos-foot">
+            <span class="src-chip"><span class="src-ic linkedin">in</span>LinkedIn</span>
+            <span>Pubblicata il 5 agosto 2026</span>
+            <span class="open-link">Apri annuncio ↗</span>
+          </div>
+        </a>
+
+        <a class="pos-card" href="https://it.indeed.com/" target="_blank" rel="noopener">
+          <div class="pos-top">
+            <div>
+              <div class="pos-title">Backend Developer (Java)</div>
+              <div class="pos-meta"><span class="co">Sannio Software</span> · <span class="zona-pill">Benevento</span></div>
+            </div>
+          </div>
+          <p class="pos-desc">Sviluppo di gestionali per PMI con Java 21, Spring Boot e Oracle. Contratto CCNL Metalmeccanico, livello commisurato all'esperienza.</p>
+          <div class="pos-foot">
+            <span class="src-chip"><span class="src-ic indeed">i</span>Indeed</span>
+            <span>Pubblicata il 1 agosto 2026</span>
+            <span class="open-link">Apri annuncio ↗</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ========== RICERCA ========== -->
+    <section class="screen" id="scr-ricerca">
+      <div class="page-head">
+        <div class="eyebrow">Motore di ricerca</div>
+        <h2>Cerca posizioni</h2>
+        <p class="sub">Combina titolo, testo della descrizione e zona per trovare esattamente quello che cerchi.</p>
+      </div>
+
+      <form class="filter-card" onsubmit="return false;">
+        <div class="filter-grid">
+          <div class="field" style="margin:0">
+            <label for="f-titolo">Titolo posizione</label>
+            <input id="f-titolo" type="text" value="AI Developer">
+          </div>
+          <div class="field" style="margin:0">
+            <label for="f-desc">Parole nella descrizione</label>
+            <input id="f-desc" type="text" value="machine learning">
+          </div>
+          <div class="field" style="margin:0">
+            <label for="f-zona">Zona</label>
+            <select id="f-zona">
+              <option>Tutta la Campania</option>
+              <option selected>Napoli</option>
+              <option>Salerno</option>
+              <option>Caserta</option>
+              <option>Avellino</option>
+              <option>Benevento</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary" style="width:auto;padding:12px 24px">Cerca</button>
+        </div>
+      </form>
+
+      <div class="chips" aria-label="Filtri attivi">
+        <span class="chip">Titolo: "AI Developer" <span class="x" aria-hidden="true">✕</span></span>
+        <span class="chip">Descrizione: "machine learning" <span class="x" aria-hidden="true">✕</span></span>
+        <span class="chip">Zona: Napoli <span class="x" aria-hidden="true">✕</span></span>
+      </div>
+      <p class="result-count"><strong>2 risultati</strong> · ordinati per data di pubblicazione</p>
+
+      <div class="cards">
+        <a class="pos-card" href="https://www.linkedin.com/jobs/" target="_blank" rel="noopener">
+          <div class="pos-top">
+            <div>
+              <div class="pos-title"><mark>AI Developer</mark> <span class="badge-new"><span class="dot"></span>Nuova</span></div>
+              <div class="pos-meta"><span class="co">Neapolis Tech S.r.l.</span> · <span class="zona-pill">Napoli</span></div>
+            </div>
+          </div>
+          <p class="pos-desc">Cerchiamo un AI Developer con esperienza in LLM, RAG e Python per il nostro team R&amp;D. Progetti di <mark>machine learning</mark> e NLP in italiano per clienti enterprise.</p>
+          <div class="pos-foot">
+            <span class="src-chip"><span class="src-ic linkedin">in</span>LinkedIn</span>
+            <span>Pubblicata l'11 agosto 2026</span>
+            <span class="open-link">Apri annuncio ↗</span>
+          </div>
+        </a>
+
+        <a class="pos-card" href="https://example.com/careers" target="_blank" rel="noopener">
+          <div class="pos-top">
+            <div>
+              <div class="pos-title"><mark>AI Developer</mark> Senior</div>
+              <div class="pos-meta"><span class="co">Vesuvio Analytics</span> · <span class="zona-pill">Napoli</span></div>
+            </div>
+          </div>
+          <p class="pos-desc">Guiderai lo sviluppo di modelli di <mark>machine learning</mark> per la previsione della domanda nel retail. Stack: Python, scikit-learn, MLflow, Azure ML.</p>
+          <div class="pos-foot">
+            <span class="src-chip"><span class="src-ic website"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 2.5 15.4 0 18-2.5-2.6-2.5-15.4 0-18z"/></svg></span>Sito aziendale</span>
+            <span>Pubblicata il 28 luglio 2026</span>
+            <span class="open-link">Apri annuncio ↗</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ========== AZIENDE (elenco) ========== -->
+    <section class="screen" id="scr-aziende">
+      <div class="page-head">
+        <div class="eyebrow">Monitoraggio</div>
+        <h2>Aziende</h2>
+        <p class="sub">Le aziende monitorate da TimeVision. Apri una scheda per vedere la dashboard con l'andamento delle posizioni.</p>
+      </div>
+      <div class="co-grid">
+        <a class="co-card" href="#/azienda">
+          <div class="co-logo">NT</div>
+          <div class="info"><div class="nm">Neapolis Tech S.r.l.</div><div class="st">Software &amp; AI · Napoli</div></div>
+          <div class="open-n"><div class="n">6</div><div class="l">posizioni</div></div>
+        </a>
+        <a class="co-card" href="#/azienda">
+          <div class="co-logo">VA</div>
+          <div class="info"><div class="nm">Vesuvio Analytics</div><div class="st">Data &amp; BI · Napoli</div></div>
+          <div class="open-n"><div class="n">4</div><div class="l">posizioni</div></div>
+        </a>
+        <a class="co-card" href="#/azienda">
+          <div class="co-logo">PH</div>
+          <div class="info"><div class="nm">Partenope HR Solutions</div><div class="st">Risorse umane · Salerno</div></div>
+          <div class="open-n"><div class="n">5</div><div class="l">posizioni</div></div>
+        </a>
+        <a class="co-card" href="#/azienda">
+          <div class="co-logo">CD</div>
+          <div class="info"><div class="nm">Costiera Digital</div><div class="st">Digital agency · Sorrento (NA)</div></div>
+          <div class="open-n"><div class="n">3</div><div class="l">posizioni</div></div>
+        </a>
+        <a class="co-card" href="#/azienda">
+          <div class="co-logo">SS</div>
+          <div class="info"><div class="nm">Sannio Software</div><div class="st">Software gestionale · Benevento</div></div>
+          <div class="open-n"><div class="n">2</div><div class="l">posizioni</div></div>
+        </a>
+        <a class="co-card" href="#/azienda">
+          <div class="co-logo">RL</div>
+          <div class="info"><div class="nm">Reggia Logistics</div><div class="st">Logistica · Caserta</div></div>
+          <div class="open-n"><div class="n">3</div><div class="l">posizioni</div></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ========== DASHBOARD AZIENDA ========== -->
+    <section class="screen" id="scr-azienda">
+      <p class="crumb"><a href="#/aziende">Aziende</a> / Neapolis Tech S.r.l.</p>
+
+      <div class="co-head">
+        <div class="co-logo">NT</div>
+        <div>
+          <h3>Neapolis Tech S.r.l.</h3>
+          <div class="meta">
+            <span>Software &amp; AI</span>
+            <span>Napoli, Centro Direzionale</span>
+            <a href="https://example.com" target="_blank" rel="noopener">neapolistech.it ↗</a>
+          </div>
+        </div>
+        <span class="follow">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Azienda seguita
+        </span>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi">
+          <div class="n">6</div>
+          <div class="l">Posizioni aperte ora</div>
+          <span class="delta">+2 nell'ultimo mese</span>
+        </div>
+        <div class="kpi">
+          <div class="n">13</div>
+          <div class="l">Posizioni pubblicate nel 2026</div>
+          <span class="delta" style="color:var(--ink-soft);background:var(--line-soft)">da marzo 2026</span>
+        </div>
+        <div class="kpi">
+          <div class="n">LinkedIn</div>
+          <div class="l">Fonte principale</div>
+          <span class="delta" style="color:var(--src-linkedin);background:var(--wine-soft)">3 posizioni su 6</span>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="chart-card">
+          <h4>Posizioni pubblicate per mese</h4>
+          <p class="ch-sub">Marzo – Agosto 2026</p>
+          <svg class="linechart" viewBox="0 0 340 170" role="img" aria-label="Grafico a linea: posizioni pubblicate per mese, da 1 a marzo a 4 ad agosto">
+            <!-- gridlines -->
+            <g stroke="#f3edef" stroke-width="1">
+              <line x1="24" y1="130" x2="316" y2="130"/>
+              <line x1="24" y1="103" x2="316" y2="103"/>
+              <line x1="24" y1="76"  x2="316" y2="76"/>
+              <line x1="24" y1="49"  x2="316" y2="49"/>
+              <line x1="24" y1="22"  x2="316" y2="22"/>
+            </g>
+            <g font-size="9" fill="#8a7f85">
+              <text x="14" y="133" text-anchor="end">0</text>
+              <text x="14" y="79" text-anchor="end">2</text>
+              <text x="14" y="25" text-anchor="end">4</text>
+            </g>
+            <!-- area -->
+            <path d="M32 103 L88 76 L144 103 L200 49 L256 76 L312 22 L312 130 L32 130 Z" fill="#2e7d4f" opacity="0.09"/>
+            <!-- line -->
+            <path d="M32 103 L88 76 L144 103 L200 49 L256 76 L312 22" fill="none" stroke="#2e7d4f" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+            <!-- dots -->
+            <g fill="#2e7d4f" stroke="#ffffff" stroke-width="2">
+              <circle cx="32" cy="103" r="3.5"/><circle cx="88" cy="76" r="3.5"/><circle cx="144" cy="103" r="3.5"/>
+              <circle cx="200" cy="49" r="3.5"/><circle cx="256" cy="76" r="3.5"/>
+              <circle cx="312" cy="22" r="4.5"/>
+            </g>
+            <text x="312" y="12" text-anchor="middle" font-size="10.5" font-weight="800" fill="#1F5436">4</text>
+            <!-- x labels -->
+            <g font-size="9.5" fill="#8a7f85" text-anchor="middle">
+              <text x="32" y="146">Mar</text><text x="88" y="146">Apr</text><text x="144" y="146">Mag</text>
+              <text x="200" y="146">Giu</text><text x="256" y="146">Lug</text><text x="312" y="146">Ago</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="chart-card">
+          <h4>Posizioni aperte per fonte</h4>
+          <p class="ch-sub">6 posizioni totali</p>
+          <div class="hbars">
+            <div class="hbar">
+              <span class="lbl"><span class="sw" style="background:var(--src-linkedin)"></span>LinkedIn</span>
+              <div class="track"><div class="fill" style="width:100%;background:var(--src-linkedin)"></div></div>
+              <span class="val">3</span>
+            </div>
+            <div class="hbar">
+              <span class="lbl"><span class="sw" style="background:var(--src-indeed)"></span>Indeed</span>
+              <div class="track"><div class="fill" style="width:33%;background:var(--src-indeed)"></div></div>
+              <span class="val">1</span>
+            </div>
+            <div class="hbar">
+              <span class="lbl"><span class="sw" style="background:var(--src-website)"></span>Sito aziendale</span>
+              <div class="track"><div class="fill" style="width:67%;background:var(--src-website)"></div></div>
+              <span class="val">2</span>
+            </div>
+          </div>
+          <h4 style="margin-top:24px">Per zona</h4>
+          <p class="ch-sub">Sedi delle posizioni aperte</p>
+          <div class="hbars">
+            <div class="hbar">
+              <span class="lbl">Napoli</span>
+              <div class="track"><div class="fill" style="width:100%;background:var(--wine-mid)"></div></div>
+              <span class="val">4</span>
+            </div>
+            <div class="hbar">
+              <span class="lbl">Salerno</span>
+              <div class="track"><div class="fill" style="width:25%;background:var(--wine-mid)"></div></div>
+              <span class="val">1</span>
+            </div>
+            <div class="hbar">
+              <span class="lbl">Remoto</span>
+              <div class="track"><div class="fill" style="width:25%;background:var(--wine-mid)"></div></div>
+              <span class="val">1</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tbl-card">
+        <h4>Posizioni aperte (6)</h4>
+        <div class="tbl-wrap">
+          <table class="openings">
+            <thead>
+              <tr><th>Posizione</th><th>Zona</th><th>Fonte</th><th>Pubblicata</th><th></th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>AI Developer</td><td>Napoli</td>
+                <td><span class="src-chip"><span class="src-ic linkedin">in</span>LinkedIn</span></td>
+                <td>11 ago 2026</td>
+                <td><a href="https://www.linkedin.com/jobs/" target="_blank" rel="noopener" style="color:var(--wine-mid);font-weight:700">Apri ↗</a></td>
+              </tr>
+              <tr>
+                <td>DevOps Engineer</td><td>Napoli</td>
+                <td><span class="src-chip"><span class="src-ic website"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 2.5 15.4 0 18-2.5-2.6-2.5-15.4 0-18z"/></svg></span>Sito</span></td>
+                <td>7 ago 2026</td>
+                <td><a href="https://example.com/careers" target="_blank" rel="noopener" style="color:var(--wine-mid);font-weight:700">Apri ↗</a></td>
+              </tr>
+              <tr>
+                <td>Frontend Developer (React)</td><td>Napoli</td>
+                <td><span class="src-chip"><span class="src-ic linkedin">in</span>LinkedIn</span></td>
+                <td>30 lug 2026</td>
+                <td><a href="https://www.linkedin.com/jobs/" target="_blank" rel="noopener" style="color:var(--wine-mid);font-weight:700">Apri ↗</a></td>
+              </tr>
+              <tr>
+                <td>QA Engineer</td><td>Remoto</td>
+                <td><span class="src-chip"><span class="src-ic indeed">i</span>Indeed</span></td>
+                <td>22 lug 2026</td>
+                <td><a href="https://it.indeed.com/" target="_blank" rel="noopener" style="color:var(--wine-mid);font-weight:700">Apri ↗</a></td>
+              </tr>
+              <tr>
+                <td>Project Manager IT</td><td>Napoli</td>
+                <td><span class="src-chip"><span class="src-ic linkedin">in</span>LinkedIn</span></td>
+                <td>15 lug 2026</td>
+                <td><a href="https://www.linkedin.com/jobs/" target="_blank" rel="noopener" style="color:var(--wine-mid);font-weight:700">Apri ↗</a></td>
+              </tr>
+              <tr>
+                <td>Sales Account (Salerno)</td><td>Salerno</td>
+                <td><span class="src-chip"><span class="src-ic website"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 2.5 15.4 0 18-2.5-2.6-2.5-15.4 0-18z"/></svg></span>Sito</span></td>
+                <td>8 lug 2026</td>
+                <td><a href="https://example.com/careers" target="_blank" rel="noopener" style="color:var(--wine-mid);font-weight:700">Apri ↗</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== NOTIFICHE ========== -->
+    <section class="screen" id="scr-notifiche">
+      <div class="page-head">
+        <div class="eyebrow">Preferenze</div>
+        <h2>Notifiche email</h2>
+        <p class="sub">Riceverai una email quando compaiono nuove posizioni che corrispondono a ciò che segui. Attiva o disattiva gli avvisi per ruolo, azienda e fonte.</p>
+      </div>
+
+      <div class="pref-section">
+        <div class="master-row">
+          <div class="grow">
+            <div class="t">Notifiche attive</div>
+            <div class="d">Invio a maria.esposito@timevision.it quando vengono rilevate nuove posizioni.</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked aria-label="Attiva o disattiva tutte le notifiche"><span class="tk"></span></label>
+        </div>
+      </div>
+
+      <div class="pref-section">
+        <h4>Ruoli seguiti</h4>
+        <p class="desc">Ricevi un avviso quando una qualsiasi azienda pubblica una posizione con questo titolo.</p>
+        <div class="pref-row">
+          <div class="grow">AI Developer</div>
+          <label class="toggle"><input type="checkbox" checked aria-label="Notifiche per AI Developer"><span class="tk"></span></label>
+        </div>
+        <div class="pref-row">
+          <div class="grow">Data Engineer</div>
+          <label class="toggle"><input type="checkbox" checked aria-label="Notifiche per Data Engineer"><span class="tk"></span></label>
+        </div>
+        <div class="pref-row">
+          <div class="grow">HR Specialist</div>
+          <label class="toggle"><input type="checkbox" aria-label="Notifiche per HR Specialist"><span class="tk"></span></label>
+        </div>
+        <div class="pref-row">
+          <div class="grow">Full-Stack Developer</div>
+          <label class="toggle"><input type="checkbox" aria-label="Notifiche per Full-Stack Developer"><span class="tk"></span></label>
+        </div>
+        <div class="add-row">
+          <input type="text" placeholder="Aggiungi un ruolo da seguire, es. “DevOps Engineer”" aria-label="Nuovo ruolo da seguire">
+          <button type="button" class="btn-ghost">Aggiungi</button>
+        </div>
+      </div>
+
+      <div class="pref-section">
+        <h4>Aziende seguite</h4>
+        <p class="desc">Ricevi un avviso per ogni nuova posizione pubblicata da queste aziende, qualunque sia il ruolo.</p>
+        <div class="pref-row">
+          <div class="grow">Neapolis Tech S.r.l. <span class="sub-lbl">· Napoli</span></div>
+          <label class="toggle"><input type="checkbox" checked aria-label="Notifiche per Neapolis Tech"><span class="tk"></span></label>
+        </div>
+        <div class="pref-row">
+          <div class="grow">Vesuvio Analytics <span class="sub-lbl">· Napoli</span></div>
+          <label class="toggle"><input type="checkbox" checked aria-label="Notifiche per Vesuvio Analytics"><span class="tk"></span></label>
+        </div>
+        <div class="pref-row">
+          <div class="grow">Partenope HR Solutions <span class="sub-lbl">· Salerno</span></div>
+          <label class="toggle"><input type="checkbox" aria-label="Notifiche per Partenope HR Solutions"><span class="tk"></span></label>
+        </div>
+        <div class="pref-row">
+          <div class="grow">Reggia Logistics <span class="sub-lbl">· Caserta</span></div>
+          <label class="toggle"><input type="checkbox" aria-label="Notifiche per Reggia Logistics"><span class="tk"></span></label>
+        </div>
+      </div>
+
+      <div class="pref-section">
+        <h4>Fonti</h4>
+        <p class="desc">Limita gli avvisi alle fonti che ti interessano.</p>
+        <div class="pref-row">
+          <span class="src-ic linkedin">in</span>
+          <div class="grow">LinkedIn</div>
+          <label class="toggle"><input type="checkbox" checked aria-label="Notifiche da LinkedIn"><span class="tk"></span></label>
+        </div>
+        <div class="pref-row">
+          <span class="src-ic indeed">i</span>
+          <div class="grow">Indeed</div>
+          <label class="toggle"><input type="checkbox" checked aria-label="Notifiche da Indeed"><span class="tk"></span></label>
+        </div>
+        <div class="pref-row">
+          <span class="src-ic website"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 2.5 15.4 0 18-2.5-2.6-2.5-15.4 0-18z"/></svg></span>
+          <div class="grow">Siti aziendali</div>
+          <label class="toggle"><input type="checkbox" checked aria-label="Notifiche da siti aziendali"><span class="tk"></span></label>
+        </div>
+      </div>
+
+      <div class="save-bar">
+        <button type="button" class="btn-primary">Salva preferenze</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="mock-note">Mockup · JobSignal v0</div>
+
+<script>
+  (function () {
+    var routes = ['login', 'posizioni', 'ricerca', 'aziende', 'azienda', 'notifiche'];
+    var shell = document.getElementById('app-shell');
+
+    function render() {
+      var r = (location.hash || '#/login').replace('#/', '');
+      if (routes.indexOf(r) === -1) r = 'login';
+      var isLogin = r === 'login';
+      shell.classList.toggle('active', !isLogin);
+      document.getElementById('scr-login').classList.toggle('active', isLogin);
+      routes.forEach(function (name) {
+        if (name === 'login') return;
+        var el = document.getElementById('scr-' + name);
+        if (el) el.classList.toggle('active', !isLogin && name === r);
+      });
+      // sidebar active state ("azienda" highlights "aziende")
+      var navKey = r === 'azienda' ? 'aziende' : r;
+      document.querySelectorAll('.sb-nav a').forEach(function (a) {
+        a.classList.toggle('active', a.getAttribute('data-route') === navKey);
+      });
+      window.scrollTo(0, 0);
+    }
+
+    window.addEventListener('hashchange', render);
+    render();
+  })();
+</script>

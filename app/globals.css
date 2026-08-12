@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+:root {
+  /* JobSignal design system — see mockup/jobsignal-mockup.html */
+  --wine: #510b1d;
+  --wine-deep: #3d0815;
+  --wine-700: #73142d;
+  --wine-mid: #973350;
+  --wine-soft: #f6e7eb;
+  --green: #1f5436;
+  --green-bright: #4eb87a;
+  --green-soft: #e6f2eb;
+  --cream: #fbf8f4;
+  --paper: #ffffff;
+  --ink: #1d1117;
+  --ink-soft: #5b4f55;
+  --ink-faint: #8a7f85;
+  --line-soft: #f3edef;
+}
+
+@theme inline {
+  --color-wine: var(--wine);
+  --color-wine-deep: var(--wine-deep);
+  --color-wine-700: var(--wine-700);
+  --color-wine-mid: var(--wine-mid);
+  --color-wine-soft: var(--wine-soft);
+  --color-green: var(--green);
+  --color-green-bright: var(--green-bright);
+  --color-green-soft: var(--green-soft);
+  --color-cream: var(--cream);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-line-soft: var(--line-soft);
+  --font-sans: var(--font-jakarta), "Segoe UI", system-ui, sans-serif;
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
