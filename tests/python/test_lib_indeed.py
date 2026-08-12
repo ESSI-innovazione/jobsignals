@@ -40,3 +40,29 @@ def test_to_job_results_skips_rows_without_url_and_handles_nan():
     out = to_job_results(rows)
     assert len(out) == 1
     assert out[0]["salary"] is None
+
+
+def test_to_job_results_salary_strips_trailing_zero_from_floats():
+    rows = [
+        {
+            "title": "Float salary",
+            "job_url": "https://indeed.com/viewjob?jk=2",
+            "min_amount": 30000.0,
+            "max_amount": 40000.0,
+            "currency": "EUR",
+        }
+    ]
+    out = to_job_results(rows)
+    assert out[0]["salary"] == "30000 - 40000 EUR"
+
+
+def test_to_job_results_strips_html_from_snippet():
+    rows = [
+        {
+            "title": "Marked up",
+            "job_url": "https://indeed.com/viewjob?jk=3",
+            "description": "<p>Great <b>role</b></p>",
+        }
+    ]
+    out = to_job_results(rows)
+    assert out[0]["snippet"] == "Great role"

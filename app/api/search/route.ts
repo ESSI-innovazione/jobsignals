@@ -15,7 +15,8 @@ async function fetchWithTimeout(url: string, ms: number): Promise<JobResult[]> {
   try {
     const res = await fetch(url, { signal: ctl.signal });
     if (!res.ok) throw new Error(`${url} responded ${res.status}`);
-    const data = (await res.json()) as { results?: JobResult[] };
+    const data = (await res.json()) as { results?: JobResult[]; error?: string };
+    if (data.error) throw new Error(`indeed: ${data.error}`);
     return data.results ?? [];
   } finally {
     clearTimeout(timer);

@@ -1,4 +1,5 @@
 import hashlib
+import re
 from typing import Any, Optional
 
 
@@ -13,8 +14,29 @@ def _s(v: Any) -> str:
     return "" if s.lower() == "nan" else s
 
 
+def _num(v: Any) -> str:
+    """Like _s, but strips a trailing '.0' from whole-number floats
+    (e.g. 30000.0 or "30000.0" -> "30000"), keeping genuine fractional
+    values intact (e.g. 1500.5 -> "1500.5")."""
+    s = _s(v)
+    if not s:
+        return s
+    try:
+        f = float(s)
+    except (TypeError, ValueError):
+        return s
+    return str(int(f)) if f.is_integer() else s
+
+
+def _strip_html(s: str) -> str:
+    if not s:
+        return s
+    text = re.sub(r"<[^>]+>", " ", s)
+    return re.sub(r"\s+", " ", text).strip()
+
+
 def _salary(row: dict[str, Any]) -> Optional[str]:
-    lo, hi = _s(row.get("min_amount")), _s(row.get("max_amount"))
+    lo, hi = _num(row.get("min_amount")), _num(row.get("max_amount"))
     cur = _s(row.get("currency"))
     if lo and hi:
         base = f"{lo} - {hi}"
@@ -47,7 +69,7 @@ def to_job_results(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "location": _location(row),
                 "source": "indeed",
                 "url": url,
-                "snippet": _s(row.get("description"))[:400],
+                "snippet": _strip_html(_s(row.get("description")))[:400],
                 "salary": _salary(row),
                 "postedAt": _s(row.get("date_posted")) or None,
             }
