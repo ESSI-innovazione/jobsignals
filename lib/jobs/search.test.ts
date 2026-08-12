@@ -33,4 +33,23 @@ describe("aggregate", () => {
     ]);
     expect(res.sources.jooble).toBe("skipped");
   });
+
+  it("dedupes identical jobs returned by different sources", async () => {
+    const res = await aggregate("dev", [
+      {
+        name: "jooble",
+        fetch: async () => [
+          job({ title: "Dev", company: "Acme", location: "Napoli", url: "https://j", source: "jooble" }),
+        ],
+      },
+      {
+        name: "indeed",
+        fetch: async () => [
+          job({ title: "Dev", company: "Acme", location: "Napoli", url: "https://i", source: "indeed" }),
+        ],
+      },
+    ]);
+    expect(res.sources).toEqual({ jooble: "ok", indeed: "ok" });
+    expect(res.results).toHaveLength(1);
+  });
 });

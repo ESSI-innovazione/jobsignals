@@ -55,6 +55,9 @@ export async function GET(req: NextRequest): Promise<Response> {
   ];
 
   const body = await aggregate(q, fetchers);
-  cache.set(key, { at: Date.now(), body });
+  const hasError = Object.values(body.sources).includes("error");
+  if (!hasError) {
+    cache.set(key, { at: Date.now(), body });
+  }
   return Response.json(body);
 }
