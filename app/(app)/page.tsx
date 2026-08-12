@@ -5,7 +5,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Container } from "@/components/container";
 import { PositionCard } from "@/components/position-card";
 import { SourceChip } from "@/components/source-chip";
-import { LogoMark } from "@/components/logo";
+import { TimeVisionLogo } from "@/components/timevision-logo";
 import { companyById } from "@/lib/sample-data";
 import { CanvasRevealEffect } from "@/components/ui/sign-in-flow-1";
 import { ImageStreamHero } from "@/components/ui/image-stream-hero";
@@ -168,13 +168,10 @@ export default function HomePage() {
           className="absolute inset-0 bg-[radial-gradient(ellipse_60%_65%_at_50%_50%,rgba(255,255,255,0.9)_0%,rgba(255,255,255,0.45)_55%,transparent_78%)] dark:bg-[radial-gradient(ellipse_60%_65%_at_50%_50%,rgba(0,0,0,0.85)_0%,rgba(0,0,0,0.4)_55%,transparent_78%)]"
         />
         <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 text-center">
-        <LogoMark className="w-14 h-14" />
-        <div className="mt-5 text-5xl font-bold leading-none tracking-tight text-gray-800 lg:text-6xl dark:text-white">
+        <TimeVisionLogo className="h-12 w-auto text-[#034b72] lg:h-14 dark:text-white" />
+        <div className="mt-6 text-5xl font-bold leading-none tracking-tight text-gray-800 lg:text-6xl dark:text-white">
           Job<span className="text-indigo-600 dark:text-indigo-400">Signal</span>
         </div>
-        <p className="mt-3 text-xs font-semibold uppercase tracking-[0.35em] text-gray-500 dark:text-gray-300">
-          TimeVision
-        </p>
         <h1 className="mt-8 text-3xl font-bold leading-snug tracking-tight text-gray-800 lg:text-4xl dark:text-white">
           Cosa stai cercando?
         </h1>
