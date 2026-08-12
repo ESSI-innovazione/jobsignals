@@ -20,15 +20,15 @@ export function Navbar() {
   const pathname = usePathname();
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
-  // The home route has a full-screen dark canvas background: force the
-  // navbar's dark styles there so it blends in, whatever the site theme.
+  // On the home route the page paints its own full-screen background:
+  // keep the navbar transparent there so the gradient shows through.
   const isHome = pathname === "/";
 
   return (
     <div
       className={cn(
         "w-full border-b border-gray-100 dark:border-neutral-800",
-        isHome && "dark border-white/10 bg-transparent"
+        isHome && "border-transparent dark:border-transparent bg-transparent"
       )}
     >
       <nav className="container relative flex flex-wrap items-center justify-between p-6 mx-auto lg:justify-between xl:px-1">

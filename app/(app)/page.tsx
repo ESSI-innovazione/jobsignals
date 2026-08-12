@@ -57,22 +57,21 @@ export default function HomePage() {
   const results = useMemo(() => search(query), [query]);
 
   return (
-    // `dark` forces the dark card/input styles on the black canvas background.
     // The background layer is FIXED so it covers the whole viewport (behind
-    // navbar and footer too), matching the reference image: black on top,
-    // violet glow rising from the bottom.
-    <div className="dark relative flex-1 w-full">
+    // navbar and footer too). It follows the theme toggle: dark = the
+    // reference image (black with a violet glow from below), light = white
+    // with a soft lavender glow. Content uses its normal light/dark styles.
+    <div className="relative flex-1 w-full">
       <div className="fixed inset-0 -z-10 pointer-events-none" aria-hidden="true">
-        {/* Reference-image gradient: black → deep violet glow from below */}
-        <div className="absolute inset-0 bg-black" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_140%_90%_at_50%_120%,#7c3aed_0%,#5b21b6_25%,#3b0764_50%,#17053a_68%,#000000_88%)]" />
-        {/* Subtle dot-matrix reveal on top of the gradient */}
+        <div className="absolute inset-0 bg-white dark:bg-black" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_140%_90%_at_50%_120%,#c4b5fd_0%,#ddd6fe_25%,#ede9fe_50%,#ffffff_82%)] dark:bg-[radial-gradient(ellipse_140%_90%_at_50%_120%,#7c3aed_0%,#5b21b6_25%,#3b0764_50%,#17053a_68%,#000000_88%)]" />
+        {/* Subtle dot-matrix reveal on top of the gradient (violet: visible on both themes) */}
         <CanvasRevealEffect
           animationSpeed={3}
           containerClassName="bg-transparent"
           colors={[
             [139, 92, 246],
-            [255, 255, 255],
+            [124, 58, 237],
           ]}
           dotSize={4}
           opacities={[0.06, 0.06, 0.08, 0.08, 0.1, 0.1, 0.12, 0.14, 0.16, 0.18]}
