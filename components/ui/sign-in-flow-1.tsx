@@ -513,6 +513,12 @@ export const SignInPage = ({ className }: SignInPageProps) => {
                       </a>
                       .
                     </p>
+
+                    <div className="pt-8">
+                      <p className="text-sm font-semibold uppercase tracking-[0.35em] text-white/60">
+                        TimeVision
+                      </p>
+                    </div>
                   </motion.div>
                 ) : (
                   <motion.div
