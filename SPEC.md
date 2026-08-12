@@ -50,7 +50,7 @@ It is **not** a public job board. Only internal TimeVision users can log in. Dat
 | `user` | TimeVision HR team | Searches positions (home + advanced), views company profiles/dashboards, **adds/edits/closes positions daily via `/gestione`**, manages **their own** notification preferences | The web app |
 
 - Role is stored on `profiles.role` (`'admin'` \| `'user'`, default `'user'`). In v1 the web app renders the same UI for both roles; the role column exists so future versions can gate admin-only areas without a migration.
-- There is **no signup flow**. The admin creates users in Supabase Auth (Dashboard → Authentication → Add user) with a `@timevision.it` email; a database trigger auto-creates the matching `profiles` row.
+- There is **no signup flow**. Access is via **Google OAuth restricted to `@timevision.it`** (§5.1): any TimeVision Google Workspace account can sign in, and a database trigger auto-creates the matching `profiles` row on first login. The admin no longer pre-creates users.
 - **Positions are writable by every authenticated user** (the whole HR team maintains the dataset); companies and profiles are not.
 
 ---
@@ -318,21 +318,24 @@ A `seed.sql` inserts the mockup's sample set: 6 companies in Campania (Neapolis 
 ### 5.1 Auth (login riservato)
 
 **Behavior**
-- `/login` shows the branded two-panel login page from the mockup (brand panel + card with "Email aziendale" / "Password" / "Accedi").
-- Sign-in via Supabase Auth `signInWithPassword`. On success → redirect to `/` (the search home).
-- Sessions are cookie-based (`@supabase/ssr`). Next.js middleware guards every route except `/login` and static assets: unauthenticated → redirect to `/login`; authenticated user visiting `/login` → redirect to `/`.
-- "Esci" in the sidebar signs out and returns to `/login`.
-- No signup, no password-reset UI in v1 (footer text: "Problemi di accesso? Scrivi a innovazione@timevision.it"; the admin resets passwords from the Supabase dashboard).
+- `/login` renders the animated sign-in page (`components/ui/sign-in-flow-1.tsx`: dot-matrix canvas reveal, floating JobSignal pill navbar) with a **single sign-in method: "Accedi con Google"**. No email/password form.
+- Sign-in via Supabase Auth **Google OAuth**: `signInWithOAuth({ provider: 'google', options: { redirectTo: <APP_URL>/auth/callback } })`; the callback route exchanges the code for a session. On success → redirect to `/` (the search home).
+- **Domain restriction (the access control):** only TimeVision Google Workspace accounts are allowed. Pass `hd: 'timevision.it'` as a query param to Google, and — since `hd` is only a UI hint — **verify server-side in the callback** that the authenticated email ends with `@timevision.it`; otherwise sign the session out immediately and show "Accesso consentito solo con un account @timevision.it."
+- First Google login auto-creates the `auth.users` row, and the `handle_new_user` trigger (§4.5) creates the `profiles` row — no admin pre-provisioning needed for `@timevision.it` accounts.
+- Sessions are cookie-based (`@supabase/ssr`). Next.js middleware guards every route except `/login`, `/auth/callback`, and static assets: unauthenticated → redirect to `/login`; authenticated user visiting `/login` → redirect to `/`.
+- "Esci" in the navbar signs out and returns to `/login`.
+- Setup prerequisite: Google OAuth client (ID + secret) configured in Supabase Auth providers, with the Supabase callback URL registered in Google Cloud Console.
 
 **Edge cases**
-- Wrong credentials → inline Italian error: "Email o password non corretti." (do not reveal whether the email exists).
+- Non-`@timevision.it` Google account → session rejected server-side in the callback with the Italian error above (the `hd` param alone is not trusted).
+- OAuth flow cancelled/failed at Google → back on `/login` with "Accesso non riuscito. Riprova."
 - Expired/invalid session mid-navigation → middleware redirects to `/login`.
 - Deep link while logged out (e.g. `/aziende/<id>`) → after login, land on `/` (v1 does not preserve the intended destination; acceptable simplification).
 
 **Acceptance criteria**
 - [ ] Any app route requested without a session redirects to `/login`.
-- [ ] A user created in Supabase Auth can log in and gets a `profiles` row automatically.
-- [ ] Wrong password shows the Italian error without a page crash.
+- [ ] A `@timevision.it` Google account signs in and gets a `profiles` row automatically on first login.
+- [ ] A non-`@timevision.it` Google account completes the Google flow but is rejected with the Italian error and holds no session afterwards.
 - [ ] "Esci" ends the session; the back button does not show protected content afterwards.
 
 ### 5.2 Home — search-first (`/`)
