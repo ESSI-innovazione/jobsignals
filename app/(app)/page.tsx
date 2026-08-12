@@ -111,7 +111,13 @@ export default function HomePage() {
         />
         <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 text-center">
         <LogoMark className="w-14 h-14" />
-        <h1 className="mt-6 text-4xl font-bold leading-snug tracking-tight text-gray-800 lg:text-5xl lg:leading-tight dark:text-white">
+        <div className="mt-5 text-5xl font-bold leading-none tracking-tight text-gray-800 lg:text-6xl dark:text-white">
+          Job<span className="text-indigo-600 dark:text-indigo-400">Signal</span>
+        </div>
+        <p className="mt-3 text-xs font-semibold uppercase tracking-[0.35em] text-gray-500 dark:text-gray-300">
+          TimeVision
+        </p>
+        <h1 className="mt-8 text-3xl font-bold leading-snug tracking-tight text-gray-800 lg:text-4xl dark:text-white">
           Cosa stai cercando?
         </h1>
         <p className="py-4 text-lg leading-normal text-gray-500 lg:text-xl dark:text-gray-300">
