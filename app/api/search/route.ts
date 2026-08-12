@@ -35,12 +35,17 @@ async function fetchWithTimeout(url: string, ms: number): Promise<JobResult[]> {
 export async function GET(req: NextRequest): Promise<Response> {
   const q = (req.nextUrl.searchParams.get("q") ?? "").trim().slice(0, 200);
   const where = (req.nextUrl.searchParams.get("where") ?? "Italia").trim() || "Italia";
+  // fast=1: suggestion mode — fewer Indeed results and a tighter timeout,
+  // so as-you-type stays responsive; the full search keeps the deep scrape.
+  const fast = req.nextUrl.searchParams.get("fast") === "1";
   if (!q) {
     return Response.json({ results: [], sources: {} } satisfies SearchResponse);
   }
 
-  const key = `${q.toLowerCase()}|${where.toLowerCase()}`;
-  const hit = cache.get(key);
+  const baseKey = `${q.toLowerCase()}|${where.toLowerCase()}`;
+  const key = `${baseKey}|${fast ? "fast" : "full"}`;
+  // A cached full search can always serve a fast request too.
+  const hit = cache.get(key) ?? (fast ? cache.get(`${baseKey}|full`) : undefined);
   if (hit && Date.now() - hit.at < CACHE_TTL_MS) return Response.json(hit.body);
 
   const origin = req.nextUrl.origin;
@@ -58,8 +63,10 @@ export async function GET(req: NextRequest): Promise<Response> {
       name: "indeed",
       fetch: () =>
         fetchWithTimeout(
-          `${origin}/api/indeed?q=${encodeURIComponent(q)}&where=${encodeURIComponent(where)}`,
-          8000
+          `${origin}/api/indeed?q=${encodeURIComponent(q)}&where=${encodeURIComponent(where)}&limit=${
+            fast ? 10 : 50
+          }`,
+          fast ? 6000 : 8000
         ),
     },
   ];

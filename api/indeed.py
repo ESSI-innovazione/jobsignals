@@ -39,7 +39,12 @@ class handler(BaseHTTPRequestHandler):
         q = (params.get("q", [""])[0] or "").strip()
         where = (params.get("where", ["Italia"])[0] or "Italia").strip()
         try:
-            results = search_indeed(q, where) if q else []
+            limit = int(params.get("limit", ["50"])[0])
+        except ValueError:
+            limit = 50
+        limit = max(1, min(limit, 50))
+        try:
+            results = search_indeed(q, where, limit) if q else []
             payload = {"results": results, "source": "indeed"}
         except Exception as exc:  # never 500 the whole search
             payload = {"results": [], "source": "indeed", "error": str(exc)}

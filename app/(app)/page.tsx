@@ -52,9 +52,10 @@ export default function HomePage() {
     const ctl = new AbortController();
     const timer = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(term)}`, {
-          signal: ctl.signal,
-        });
+        const res = await fetch(
+          `/api/search?q=${encodeURIComponent(term)}&fast=1`,
+          { signal: ctl.signal }
+        );
         if (!res.ok) throw new Error(String(res.status));
         const data = (await res.json()) as { results: JobResult[] };
         setSuggestions(data.results.slice(0, 5));
