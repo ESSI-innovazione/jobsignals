@@ -20,6 +20,27 @@ export function stripHtml(s: string): string {
   return (s ?? "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
 
+// Jooble matches locations by English name and returns nothing for the
+// Italian spellings the app uses (e.g. "Italia" → 0 results, "Italy" → 16).
+// Translate the country and the major Italian cities; anything not listed
+// (Salerno, Caserta, Benevento, Sorrento… — same in English) passes through.
+const JOOBLE_LOCATION_ALIASES: Record<string, string> = {
+  italia: "Italy",
+  roma: "Rome",
+  milano: "Milan",
+  napoli: "Naples",
+  torino: "Turin",
+  firenze: "Florence",
+  venezia: "Venice",
+  genova: "Genoa",
+  padova: "Padua",
+};
+
+export function normalizeJoobleLocation(location: string): string {
+  const key = (location ?? "").trim().toLowerCase();
+  return JOOBLE_LOCATION_ALIASES[key] ?? location;
+}
+
 export function mapJoobleJob(job: JoobleJob): JobResult {
   return {
     id: jobId("jooble", job.link),
@@ -47,7 +68,12 @@ export async function searchJooble(
   const res = await fetch(`${JOOBLE_ENDPOINT}/${apiKey}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ keywords: query, location: where, page: 1, ResultOnPage: 50 }),
+    body: JSON.stringify({
+      keywords: query,
+      location: normalizeJoobleLocation(where),
+      page: 1,
+      ResultOnPage: 50,
+    }),
     signal: opts.signal,
   });
   if (!res.ok) throw new Error(`Jooble responded ${res.status}`);

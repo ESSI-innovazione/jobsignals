@@ -1,11 +1,31 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { stripHtml, mapJoobleJob, searchJooble } from "./jooble";
+import {
+  stripHtml,
+  mapJoobleJob,
+  searchJooble,
+  normalizeJoobleLocation,
+} from "./jooble";
 
 afterEach(() => vi.restoreAllMocks());
 
 describe("stripHtml", () => {
   it("removes tags and collapses whitespace", () => {
     expect(stripHtml("<b>AI</b>   <i>Dev</i>")).toBe("AI Dev");
+  });
+});
+
+describe("normalizeJoobleLocation", () => {
+  it("maps Italian country/city names to the English forms Jooble expects", () => {
+    expect(normalizeJoobleLocation("Italia")).toBe("Italy");
+    expect(normalizeJoobleLocation("italia")).toBe("Italy");
+    expect(normalizeJoobleLocation(" Napoli ")).toBe("Naples");
+    expect(normalizeJoobleLocation("Roma")).toBe("Rome");
+  });
+
+  it("passes through unknown or already-English locations unchanged", () => {
+    expect(normalizeJoobleLocation("Salerno")).toBe("Salerno");
+    expect(normalizeJoobleLocation("Italy")).toBe("Italy");
+    expect(normalizeJoobleLocation("")).toBe("");
   });
 });
 
