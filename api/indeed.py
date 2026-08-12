@@ -1,0 +1,41 @@
+from http.server import BaseHTTPRequestHandler
+from urllib.parse import urlparse, parse_qs
+import json
+
+from _lib_indeed import to_job_results
+
+try:
+    from jobspy import scrape_jobs
+except Exception:  # keep the module importable even if the dep is absent
+    scrape_jobs = None
+
+
+def search_indeed(query: str, where: str, limit: int = 50) -> list[dict]:
+    if scrape_jobs is None:
+        raise RuntimeError("python-jobspy not installed")
+    df = scrape_jobs(
+        site_name=["indeed"],
+        search_term=query,
+        location=where,
+        country_indeed="Italy",
+        results_wanted=limit,
+    )
+    rows = df.to_dict("records") if df is not None else []
+    return to_job_results(rows)
+
+
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        params = parse_qs(urlparse(self.path).query)
+        q = (params.get("q", [""])[0] or "").strip()
+        where = (params.get("where", ["Italia"])[0] or "Italia").strip()
+        try:
+            results = search_indeed(q, where) if q else []
+            payload = {"results": results, "source": "indeed"}
+        except Exception as exc:  # never 500 the whole search
+            payload = {"results": [], "source": "indeed", "error": str(exc)}
+        body = json.dumps(payload).encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(body)
