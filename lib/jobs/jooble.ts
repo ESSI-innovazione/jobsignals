@@ -16,8 +16,31 @@ export interface JoobleJob {
   id: number | string;
 }
 
+const HTML_ENTITIES: Record<string, string> = {
+  nbsp: " ",
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+  agrave: "à",
+  egrave: "è",
+  eacute: "é",
+  igrave: "ì",
+  ograve: "ò",
+  ugrave: "ù",
+};
+
 export function stripHtml(s: string): string {
-  return (s ?? "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  return (s ?? "")
+    .replace(/<[^>]*>/g, " ")
+    // decode numeric entities (&#224; &#xE8; …) and the common named ones —
+    // Jooble snippets are full of &nbsp; that otherwise leak into the UI
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(Number(dec)))
+    .replace(/&([a-z]+);/gi, (m, name) => HTML_ENTITIES[name.toLowerCase()] ?? m)
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 // Jooble matches locations by English name and returns nothing for the

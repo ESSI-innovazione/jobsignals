@@ -12,6 +12,14 @@ describe("stripHtml", () => {
   it("removes tags and collapses whitespace", () => {
     expect(stripHtml("<b>AI</b>   <i>Dev</i>")).toBe("AI Dev");
   });
+
+  it("decodes HTML entities (Jooble snippets are full of &nbsp;)", () => {
+    expect(stripHtml("&nbsp;...esperienza in ambito IT&nbsp;")).toBe(
+      "...esperienza in ambito IT"
+    );
+    expect(stripHtml("R&amp;D &egrave; qualit&#224;")).toBe("R&D è qualità");
+    expect(stripHtml("citt&#xE0; &lt;tag&gt;")).toBe("città <tag>");
+  });
 });
 
 describe("normalizeJoobleLocation", () => {
