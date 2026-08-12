@@ -240,6 +240,45 @@ export function formatDate(iso: string): string {
   );
 }
 
+// All 20 Italian regions, for the region filter.
+export const italianRegions = [
+  "Abruzzo",
+  "Basilicata",
+  "Calabria",
+  "Campania",
+  "Emilia-Romagna",
+  "Friuli-Venezia Giulia",
+  "Lazio",
+  "Liguria",
+  "Lombardia",
+  "Marche",
+  "Molise",
+  "Piemonte",
+  "Puglia",
+  "Sardegna",
+  "Sicilia",
+  "Toscana",
+  "Trentino-Alto Adige",
+  "Umbria",
+  "Valle d'Aosta",
+  "Veneto",
+] as const;
+
+// Maps a position's zone to its region ("Remoto" stays its own bucket).
+const zoneRegion: Record<string, string> = {
+  Napoli: "Campania",
+  Salerno: "Campania",
+  Caserta: "Campania",
+  Benevento: "Campania",
+  Avellino: "Campania",
+  "Sorrento (NA)": "Campania",
+  Remoto: "Remoto",
+};
+
+export function regionOf(zone: string): string {
+  return zoneRegion[zone] ?? "";
+}
+
 export function isNew(iso: string): boolean {
   // sample data is static, so "new" = the two most recent postings
   return iso >= "2026-08-10";
