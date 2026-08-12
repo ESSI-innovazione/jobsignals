@@ -57,22 +57,28 @@ export default function HomePage() {
   const results = useMemo(() => search(query), [query]);
 
   return (
-    // `dark` forces the dark card/input styles on the black canvas background
-    <div className="dark relative flex-1 w-full bg-black">
-      <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+    // `dark` forces the dark card/input styles on the black canvas background.
+    // The background layer is FIXED so it covers the whole viewport (behind
+    // navbar and footer too), matching the reference image: black on top,
+    // violet glow rising from the bottom.
+    <div className="dark relative flex-1 w-full">
+      <div className="fixed inset-0 -z-10 pointer-events-none" aria-hidden="true">
+        {/* Reference-image gradient: black → deep violet glow from below */}
+        <div className="absolute inset-0 bg-black" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_140%_90%_at_50%_120%,#7c3aed_0%,#5b21b6_25%,#3b0764_50%,#17053a_68%,#000000_88%)]" />
+        {/* Subtle dot-matrix reveal on top of the gradient */}
         <CanvasRevealEffect
           animationSpeed={3}
-          containerClassName="bg-black"
+          containerClassName="bg-transparent"
           colors={[
-            [99, 102, 241],
+            [139, 92, 246],
             [255, 255, 255],
           ]}
           dotSize={4}
-          opacities={[0.1, 0.1, 0.15, 0.15, 0.2, 0.2, 0.25, 0.3, 0.35, 0.4]}
+          opacities={[0.06, 0.06, 0.08, 0.08, 0.1, 0.1, 0.12, 0.14, 0.16, 0.18]}
+          showGradient={false}
           reverse={false}
         />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(0,0,0,0.85)_0%,_transparent_100%)]" />
-        <div className="absolute top-0 left-0 right-0 h-1/4 bg-gradient-to-b from-black to-transparent" />
       </div>
 
       <Container className="relative z-10 max-w-4xl">

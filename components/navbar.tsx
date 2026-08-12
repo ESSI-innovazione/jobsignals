@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { cn } from "@/lib/utils";
 import { DarkSwitch } from "./dark-switch";
 import { LogoText } from "./logo";
 
@@ -19,9 +20,17 @@ export function Navbar() {
   const pathname = usePathname();
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
+  // The home route has a full-screen dark canvas background: force the
+  // navbar's dark styles there so it blends in, whatever the site theme.
+  const isHome = pathname === "/";
 
   return (
-    <div className="w-full border-b border-gray-100 dark:border-neutral-800">
+    <div
+      className={cn(
+        "w-full border-b border-gray-100 dark:border-neutral-800",
+        isHome && "dark border-white/10 bg-transparent"
+      )}
+    >
       <nav className="container relative flex flex-wrap items-center justify-between p-6 mx-auto lg:justify-between xl:px-1">
         <Link href="/">
           <LogoText />

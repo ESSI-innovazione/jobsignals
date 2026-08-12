@@ -1,5 +1,8 @@
 // Footer structure adapted from the Nextly template (Web3Templates, MIT).
+"use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 import { Container } from "./container";
 import { LogoText } from "./logo";
 
@@ -12,8 +15,11 @@ const navigation = [
 ];
 
 export function Footer() {
+  // On the home route the page has a full-screen dark canvas background:
+  // force the footer's dark styles there so it blends in.
+  const isHome = usePathname() === "/";
   return (
-    <div className="relative mt-auto">
+    <div className={cn("relative mt-auto", isHome && "dark")}>
       <Container>
         <div className="grid max-w-screen-xl grid-cols-1 gap-10 pt-10 mx-auto mt-5 border-t border-gray-100 dark:border-neutral-700 lg:grid-cols-5">
           <div className="lg:col-span-2">
