@@ -4,12 +4,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Container } from "@/components/container";
 import { SectionTitle } from "@/components/section-title";
 import { PositionCard } from "@/components/position-card";
-import {
-  companies,
-  openPositions,
-  italianRegions,
-  regionOf,
-} from "@/lib/sample-data";
+import { openPositions, italianRegions, regionOf } from "@/lib/sample-data";
 
 // Sample data is static, so "today" is pinned for deterministic date filters.
 const TODAY = "2026-08-12";
@@ -64,24 +59,6 @@ const selectCls =
 const labelCls =
   "block mb-1.5 text-sm font-semibold text-gray-500 dark:text-gray-300";
 
-function Kpi({ value, label, note }: { value: string; label: string; note?: string }) {
-  return (
-    <div className="px-8 py-6 bg-gray-100 rounded-2xl dark:bg-neutral-800">
-      <div className="text-3xl font-bold tracking-tight text-gray-800 tabular-nums dark:text-white">
-        {value}
-      </div>
-      <div className="mt-1 text-sm font-medium text-gray-500 dark:text-gray-300">
-        {label}
-      </div>
-      {note && (
-        <div className="inline-block px-3 py-0.5 mt-3 text-xs font-semibold text-indigo-700 bg-indigo-100 rounded-full dark:bg-indigo-900 dark:text-indigo-200">
-          {note}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function PosizioniPage() {
   const [text, setText] = useState("");
   const [dateFilter, setDateFilter] = useState("any");
@@ -119,31 +96,21 @@ export default function PosizioniPage() {
         Clicca una posizione per aprire l&apos;annuncio originale.
       </SectionTitle>
 
-      <div className="grid grid-cols-1 gap-4 mt-6 mb-6 sm:grid-cols-3">
-        <Kpi value={String(open.length)} label="Posizioni aperte" note="+5 questa settimana" />
-        <Kpi value={String(companies.length)} label="Aziende monitorate" note="+1 questo mese" />
-        <Kpi value="3" label="Fonti attive" note="LinkedIn · Indeed · Siti" />
-      </div>
-
-      {/* Filter bar */}
-      <div className="px-8 py-6 mb-6 bg-gray-100 rounded-2xl dark:bg-neutral-800">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <div>
-            <label htmlFor="f-testo" className={labelCls}>
-              Cerca
-            </label>
-            <div className="relative">
-              <MagnifyingGlassIcon className="absolute w-4 h-4 text-gray-400 -translate-y-1/2 pointer-events-none left-4 top-1/2" />
-              <input
-                id="f-testo"
-                type="search"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder="es. Developer"
-                className={`${selectCls} pl-10`}
-              />
-            </div>
-          </div>
+      {/* Filter bar — right under the header, big search on its own row */}
+      <div className="px-8 py-6 mt-6 mb-6 bg-gray-100 rounded-2xl dark:bg-neutral-800">
+        <div className="relative mb-4">
+          <MagnifyingGlassIcon className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 pointer-events-none left-5 top-1/2" />
+          <input
+            id="f-testo"
+            type="search"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Cerca una posizione, es. Developer"
+            aria-label="Cerca una posizione"
+            className="w-full py-4 pl-12 pr-5 text-lg text-gray-800 bg-white border border-gray-200 rounded-md shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring focus:ring-indigo-100 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:focus:ring-indigo-900"
+          />
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
             <label htmlFor="f-data" className={labelCls}>
               Data pubblicazione
