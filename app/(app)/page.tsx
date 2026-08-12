@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Container } from "@/components/container";
@@ -7,7 +7,7 @@ import { TimeVisionLogo } from "@/components/timevision-logo";
 import { CanvasRevealEffect } from "@/components/ui/sign-in-flow-1";
 import { ImageStreamHero } from "@/components/ui/image-stream-hero";
 import { JobResultCard } from "@/components/job-result-card";
-import type { JobResult } from "@/lib/jobs/types";
+import { jobSourceLabels, type JobResult } from "@/lib/jobs/types";
 
 type SourceStatus = "ok" | "error" | "skipped";
 
@@ -34,6 +34,43 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [searched, setSearched] = useState(false);
+
+  // Google-style live suggestions: while typing, the top 5 ranked results
+  // from /api/search (debounced; the route caches per query for 5 min).
+  const [focused, setFocused] = useState(false);
+  const [suggestions, setSuggestions] = useState<JobResult[]>([]);
+  const [suggestLoading, setSuggestLoading] = useState(false);
+
+  useEffect(() => {
+    const term = input.trim();
+    if (term.length < 3) {
+      setSuggestions([]);
+      setSuggestLoading(false);
+      return;
+    }
+    setSuggestLoading(true);
+    const ctl = new AbortController();
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(term)}`, {
+          signal: ctl.signal,
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        const data = (await res.json()) as { results: JobResult[] };
+        setSuggestions(data.results.slice(0, 5));
+        setSuggestLoading(false);
+      } catch {
+        if (!ctl.signal.aborted) {
+          setSuggestions([]);
+          setSuggestLoading(false);
+        }
+      }
+    }, 500);
+    return () => {
+      clearTimeout(timer);
+      ctl.abort();
+    };
+  }, [input]);
 
   async function runSearch(q: string) {
     const term = q.trim();
@@ -112,6 +149,7 @@ export default function HomePage() {
           className="flex flex-col w-full max-w-2xl gap-3 mt-4 sm:flex-row"
           onSubmit={(e) => {
             e.preventDefault();
+            setFocused(false);
             runSearch(input);
           }}
         >
@@ -121,12 +159,67 @@ export default function HomePage() {
               type="search"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
               placeholder="es. AI Developer"
               aria-label="Cerca un ruolo"
               autoFocus
               autoComplete="off"
               className="w-full py-4 pl-12 pr-5 text-lg text-gray-800 bg-white border border-gray-200 rounded-md shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring focus:ring-indigo-100 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:focus:ring-indigo-900"
             />
+
+            {/* Live top-5 suggestions from /api/search */}
+            {focused && input.trim().length >= 3 && (
+              <div className="absolute left-0 right-0 z-20 mt-2 overflow-hidden text-left bg-white border border-gray-200 rounded-md shadow-lg top-full dark:bg-neutral-800 dark:border-neutral-700">
+                {suggestLoading && suggestions.length === 0 ? (
+                  <p className="px-5 py-4 text-sm text-gray-500 dark:text-gray-300">
+                    Cerco “{input.trim()}” su LinkedIn, Indeed e Jooble…
+                  </p>
+                ) : suggestions.length === 0 ? (
+                  <p className="px-5 py-4 text-sm text-gray-500 dark:text-gray-300">
+                    Nessuna posizione trovata per “{input.trim()}”.
+                  </p>
+                ) : (
+                  <>
+                    {suggestLoading && (
+                      <p className="px-5 py-2 text-xs italic text-gray-400 border-b border-gray-100 dark:border-neutral-700">
+                        Aggiorno i risultati…
+                      </p>
+                    )}
+                    {suggestions.map((s) => (
+                      <a
+                        key={s.id}
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onMouseDown={(e) => e.preventDefault()}
+                        className="flex items-center gap-3 px-5 py-3 transition-colors border-b border-gray-100 hover:bg-gray-50 dark:border-neutral-700 dark:hover:bg-neutral-700"
+                      >
+                        <MagnifyingGlassIcon className="w-4 h-4 text-gray-400 shrink-0" />
+                        <span className="flex-1 min-w-0">
+                          <span className="block text-sm font-semibold text-gray-800 truncate dark:text-white">
+                            {s.title}
+                          </span>
+                          <span className="block text-xs text-gray-500 truncate dark:text-gray-300">
+                            {[s.company, s.location].filter(Boolean).join(" · ")}
+                          </span>
+                        </span>
+                        <span className="px-2.5 py-0.5 text-xs font-semibold text-indigo-700 bg-indigo-100 rounded-full shrink-0 dark:bg-indigo-900 dark:text-indigo-200">
+                          {jobSourceLabels[s.source]}
+                        </span>
+                      </a>
+                    ))}
+                    <button
+                      type="submit"
+                      onMouseDown={(e) => e.preventDefault()}
+                      className="w-full px-5 py-3 text-sm font-semibold text-left text-indigo-600 bg-gray-50 hover:bg-gray-100 dark:bg-neutral-900 dark:text-indigo-400 dark:hover:bg-neutral-700"
+                    >
+                      Vedi tutti i risultati per “{input.trim()}” →
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
           </div>
           <button
             type="submit"
