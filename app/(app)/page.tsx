@@ -4,7 +4,9 @@ import Link from "next/link";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Container } from "@/components/container";
 import { PositionCard } from "@/components/position-card";
+import { SourceChip } from "@/components/source-chip";
 import { LogoMark } from "@/components/logo";
+import { companyById } from "@/lib/sample-data";
 import { CanvasRevealEffect } from "@/components/ui/sign-in-flow-1";
 import { ImageStreamHero } from "@/components/ui/image-stream-hero";
 import { openPositions, type Position } from "@/lib/sample-data";
@@ -56,6 +58,59 @@ function search(q: string): TieredResults {
   };
 }
 
+function tokenize(s: string): string[] {
+  return s
+    .toLowerCase()
+    .split(/[^a-z0-9àèéìíòóùú]+/)
+    .filter(Boolean);
+}
+
+// Live "top 5" ranking for the search-as-you-type dropdown: cosine
+// similarity between the query and each open position, with title tokens
+// weighted 3x over description tokens, plus a boost for exact/contained
+// title matches so intuitive matches always float to the top.
+function rankTop(q: string, limit = 5): { position: Position; score: number }[] {
+  const query = q.trim().toLowerCase();
+  const qTokens = tokenize(query);
+  if (qTokens.length === 0) return [];
+
+  const qv = new Map<string, number>();
+  qTokens.forEach((t) => qv.set(t, (qv.get(t) ?? 0) + 1));
+  const qNorm = Math.sqrt(
+    [...qv.values()].reduce((sum, v) => sum + v * v, 0)
+  );
+
+  return openPositions()
+    .map((position) => {
+      const dv = new Map<string, number>();
+      tokenize(position.title).forEach((t) => dv.set(t, (dv.get(t) ?? 0) + 3));
+      tokenize(position.description).forEach((t) =>
+        dv.set(t, (dv.get(t) ?? 0) + 1)
+      );
+      const dNorm = Math.sqrt(
+        [...dv.values()].reduce((sum, v) => sum + v * v, 0)
+      );
+      let dot = 0;
+      qv.forEach((v, t) => {
+        dot += v * (dv.get(t) ?? 0);
+      });
+      let score = dNorm > 0 ? dot / (qNorm * dNorm) : 0;
+
+      const title = position.title.toLowerCase();
+      if (title === query) score += 1;
+      else if (title.includes(query)) score += 0.5;
+
+      return { position, score };
+    })
+    .filter((x) => x.score > 0)
+    .sort(
+      (a, b) =>
+        b.score - a.score ||
+        b.position.postedAt.localeCompare(a.position.postedAt)
+    )
+    .slice(0, limit);
+}
+
 function TierLabel({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-4 mt-10 mb-5">
@@ -70,7 +125,10 @@ function TierLabel({ children }: { children: React.ReactNode }) {
 export default function HomePage() {
   const [input, setInput] = useState("");
   const [query, setQuery] = useState("");
+  const [focused, setFocused] = useState(false);
   const results = useMemo(() => search(query), [query]);
+  const suggestions = useMemo(() => rankTop(input), [input]);
+  const showSuggestions = focused && input.trim().length >= 2;
 
   return (
     // The background layer is FIXED so it covers the whole viewport (behind
@@ -127,6 +185,7 @@ export default function HomePage() {
           onSubmit={(e) => {
             e.preventDefault();
             setQuery(input);
+            setFocused(false);
           }}
         >
           <div className="relative flex-1">
@@ -135,11 +194,56 @@ export default function HomePage() {
               type="search"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
               placeholder="es. AI Developer"
               aria-label="Cerca un ruolo"
               autoFocus
+              autoComplete="off"
               className="w-full py-4 pl-12 pr-5 text-lg text-gray-800 bg-white border border-gray-200 rounded-md shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-indigo-500 focus:ring focus:ring-indigo-100 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:focus:ring-indigo-900"
             />
+
+            {/* Google-style live suggestions: top 5 by cosine similarity */}
+            {showSuggestions && (
+              <div className="absolute left-0 right-0 z-20 mt-2 overflow-hidden text-left bg-white border border-gray-200 rounded-md shadow-lg top-full dark:bg-neutral-800 dark:border-neutral-700">
+                {suggestions.length === 0 ? (
+                  <p className="px-5 py-4 text-sm text-gray-500 dark:text-gray-300">
+                    Nessuna posizione trovata per “{input.trim()}”.
+                  </p>
+                ) : (
+                  <>
+                    {suggestions.map(({ position: p }) => (
+                      <a
+                        key={p.id}
+                        href={p.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onMouseDown={(e) => e.preventDefault()}
+                        className="flex items-center gap-3 px-5 py-3 transition-colors border-b border-gray-100 hover:bg-gray-50 dark:border-neutral-700 dark:hover:bg-neutral-700"
+                      >
+                        <MagnifyingGlassIcon className="w-4 h-4 text-gray-400 shrink-0" />
+                        <span className="flex-1 min-w-0">
+                          <span className="block text-sm font-semibold text-gray-800 truncate dark:text-white">
+                            {p.title}
+                          </span>
+                          <span className="block text-xs text-gray-500 truncate dark:text-gray-300">
+                            {companyById(p.companyId)?.name} · {p.zone}
+                          </span>
+                        </span>
+                        <SourceChip source={p.source} />
+                      </a>
+                    ))}
+                    <button
+                      type="submit"
+                      onMouseDown={(e) => e.preventDefault()}
+                      className="w-full px-5 py-3 text-sm font-semibold text-left text-indigo-600 bg-gray-50 hover:bg-gray-100 dark:bg-neutral-900 dark:text-indigo-400 dark:hover:bg-neutral-700"
+                    >
+                      Vedi tutti i risultati per “{input.trim()}” →
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
           </div>
           <button
             type="submit"
