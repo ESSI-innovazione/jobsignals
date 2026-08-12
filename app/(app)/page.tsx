@@ -120,9 +120,7 @@ export default function HomePage() {
         <h1 className="mt-8 text-3xl font-bold leading-snug tracking-tight text-gray-800 lg:text-4xl dark:text-white">
           Cosa stai cercando?
         </h1>
-        <p className="py-4 text-lg leading-normal text-gray-500 lg:text-xl dark:text-gray-300">
-          Digita un ruolo e trova subito le posizioni aperte migliori.
-        </p>
+        <div className="py-3" />
 
         <form
           className="flex flex-col w-full max-w-2xl gap-3 mt-4 sm:flex-row"
